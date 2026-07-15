@@ -1,0 +1,10 @@
+src/
+ ├── components/
+ │    ├── Navbar.tsx
+ │    ├── Footer.tsx
+ │    ├── ProductCard.tsx
+ ├── pages/
+ │    ├── Home.tsx
+ │    ├── Products.tsx
+ ├── App.tsx
+ └── main.tsx
