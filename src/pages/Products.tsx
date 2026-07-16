@@ -1,4 +1,5 @@
 import Container from '../components/ui/Container';
+import Button from '../components/ui/Button';
 
 const items = [
   { name: 'Football Jersey', price: '$49' },
@@ -22,9 +23,9 @@ export default function Products() {
 
               <p className="mb-4 text-gray-600">{item.price}</p>
 
-              <button className="rounded bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600">
+              <Button size="sm">
                 Add to Cart
-              </button>
+              </Button>
             </div>
           ))}
         </div>

@@ -1,4 +1,5 @@
 import Container from '../components/ui/Container';
+import Button from '../components/ui/Button';
 
 export default function Home() {
   return (
@@ -13,9 +14,9 @@ export default function Home() {
             Home of all jerseys, sportswear, and equipment
           </p>
 
-          <button className="rounded-lg bg-white px-6 py-3 font-semibold text-blue-600 transition hover:bg-gray-200">
+          <Button variant="outline" size="lg">
             Shop Now
-          </button>
+          </Button>
         </div>
       </Container>
     </section>
