@@ -1,15 +1,11 @@
 export default function Home() {
   return (
-    <div className="text-center mt-10">
-      <h1 className="text-4xl font-bold text-blue-600">
-        Welcome to the ultimate kits
-      </h1>
-      <p className="mt-4 text-lg text-gray-600">
-        Home of all jerseys, sportswear, and equipment
-      </p>
-      <button className="mt-6 bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600">
+    <section className="flex flex-col items-center justify-center text-center py-20 bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
+      <h1 className="text-5xl font-extrabold mb-4">Welcome to the Kit Kings</h1>
+      <p className="text-lg mb-6">Home of all jerseys, sportswear, and equipment</p>
+      <button className="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-200 transition">
         Shop Now
       </button>
-    </div>
+    </section>
   );
 }
