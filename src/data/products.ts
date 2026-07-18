@@ -1,0 +1,45 @@
+import type { Product } from "../types/product";
+
+export const featuredProducts: Product[] = [
+  {
+    id: 1,
+    name: "Home Jersey",
+    team: "Chelsea",
+    sport: "Football",
+    price: 89,
+    rating: 5,
+    image: "/images/chelsea-home.png",
+    isFeatured: true,
+    isNew: true,
+  },
+  {
+    id: 2,
+    name: "Away Jersey",
+    team: "Arsenal",
+    sport: "Football",
+    price: 85,
+    rating: 5,
+    image: "/images/arsenal-away.png",
+    isFeatured: true,
+  },
+  {
+    id: 3,
+    name: "Home Jersey",
+    team: "Barcelona",
+    sport: "Football",
+    price: 92,
+    rating: 4.8,
+    image: "/images/barcelona-home.png",
+    isFeatured: true,
+  },
+  {
+    id: 4,
+    name: "Home Jersey",
+    team: "Los Angeles Lakers",
+    sport: "Basketball",
+    price: 95,
+    rating: 5,
+    image: "/images/lakers-home.png",
+    isFeatured: true,
+  },
+];

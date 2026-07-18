@@ -1,21 +1,55 @@
-export default function Products() {
-  const items = [
-    { name: "Football Jersey", price: "$49" },
-    { name: "Basketball Shoes", price: "$89" },
-    { name: "Tennis Racket", price: "$120" },
-  ];
+import { Star } from "lucide-react";
+import Button from "../ui/Button";
+import type { Product } from "../../types/product";
 
+interface ProductCardProps {
+  product: Product;
+}
+
+export default function ProductCard({
+  product,
+}: ProductCardProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 p-10">
-      {items.map((item, idx) => (
-        <div key={idx} className="border rounded-lg shadow hover:shadow-lg p-6 text-center">
-          <h2 className="text-xl font-bold mb-2">{item.name}</h2>
-          <p className="text-gray-600 mb-4">{item.price}</p>
-          <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-            Add to Cart
-          </button>
+    <div className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-2 hover:shadow-xl">
+      
+      {/* Image */}
+      <div className="flex h-72 items-center justify-center bg-slate-100">
+        <span className="text-slate-400">
+          Image Coming Soon
+        </span>
+      </div>
+
+      {/* Content */}
+      <div className="space-y-3 p-5">
+        <div>
+          <p className="text-sm uppercase tracking-wide text-blue-600">
+            {product.sport}
+          </p>
+
+          <h3 className="mt-1 text-xl font-bold">
+            {product.team}
+          </h3>
+
+          <p className="text-slate-500">
+            {product.name}
+          </p>
         </div>
-      ))}
+
+        <div className="flex items-center gap-1 text-amber-500">
+          <Star fill="currentColor" size={18} />
+          <span className="font-medium">
+            {product.rating}
+          </span>
+        </div>
+
+        <div className="flex items-center justify-between">
+          <p className="text-2xl font-extrabold text-slate-900">
+            ${product.price}
+          </p>
+
+          <Button>Add to Cart</Button>
+        </div>
+      </div>
     </div>
   );
 }

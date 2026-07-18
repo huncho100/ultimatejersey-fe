@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
+
 import {
   Heart,
   Menu,
@@ -9,24 +10,20 @@ import {
   X,
 } from 'lucide-react';
 
-import Container from '../ui/Container';
 import { navigation } from '../../constants/navigation';
+
+import Container from '../ui/Container';
+import Logo from '../ui/Logo';
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 bg-slate-900 text-white shadow-md">
+    <header className="sticky top-0 z-50 border-b border-slate-800 bg-slate-900/95 text-white shadow-lg backdrop-blur-md">
       <Container>
-        <nav className="flex h-16 items-center justify-between">
-
+        <nav className="flex h-20 items-center justify-between">
           {/* Logo */}
-          <NavLink
-            to="/"
-            className="text-2xl font-extrabold tracking-wide"
-          >
-            ⚽ Kit Kings
-          </NavLink>
+          <Logo />
 
           {/* Desktop Navigation */}
           <ul className="hidden items-center gap-8 lg:flex">
@@ -35,8 +32,8 @@ export default function Navbar() {
                 <NavLink
                   to={item.path}
                   className={({ isActive }) =>
-                    `transition-colors hover:text-blue-400 ${
-                      isActive ? 'text-blue-400' : ''
+                    `font-medium transition-colors duration-300 hover:text-blue-400 ${
+                      isActive ? 'text-blue-400' : 'text-slate-200'
                     }`
                   }
                 >
@@ -47,32 +44,22 @@ export default function Navbar() {
           </ul>
 
           {/* Desktop Icons */}
-          <div className="hidden items-center gap-5 lg:flex">
-            <Search
-              size={20}
-              className="cursor-pointer transition hover:text-blue-400"
-            />
-
-            <Heart
-              size={20}
-              className="cursor-pointer transition hover:text-blue-400"
-            />
-
-            <ShoppingCart
-              size={20}
-              className="cursor-pointer transition hover:text-blue-400"
-            />
-
-            <User
-              size={20}
-              className="cursor-pointer transition hover:text-blue-400"
-            />
+          <div className="hidden items-center gap-4 lg:flex">
+            {[Search, Heart, ShoppingCart, User].map((Icon, index) => (
+              <button
+                key={index}
+                className="rounded-full p-2 transition-all duration-300 hover:bg-slate-800 hover:text-blue-400"
+                aria-label="Navigation icon"
+              >
+                <Icon size={20} />
+              </button>
+            ))}
           </div>
 
           {/* Mobile Menu Button */}
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="lg:hidden"
+            className="rounded-lg p-2 transition-colors duration-300 hover:bg-slate-800 lg:hidden"
             aria-label="Toggle menu"
           >
             {mobileOpen ? <X size={28} /> : <Menu size={28} />}
@@ -81,16 +68,16 @@ export default function Navbar() {
 
         {/* Mobile Menu */}
         {mobileOpen && (
-          <div className="border-t border-slate-700 py-4 lg:hidden">
-            <ul className="flex flex-col gap-4">
+          <div className="border-t border-slate-800 bg-slate-900 py-5 lg:hidden">
+            <ul className="flex flex-col gap-5">
               {navigation.map((item) => (
                 <li key={item.path}>
                   <NavLink
                     to={item.path}
                     onClick={() => setMobileOpen(false)}
                     className={({ isActive }) =>
-                      `block transition hover:text-blue-400 ${
-                        isActive ? 'text-blue-400' : ''
+                      `block text-lg transition-colors duration-300 hover:text-blue-400 ${
+                        isActive ? 'text-blue-400' : 'text-slate-200'
                       }`
                     }
                   >
@@ -100,11 +87,16 @@ export default function Navbar() {
               ))}
             </ul>
 
-            <div className="mt-6 flex gap-6">
-              <Search className="cursor-pointer" />
-              <Heart className="cursor-pointer" />
-              <ShoppingCart className="cursor-pointer" />
-              <User className="cursor-pointer" />
+            <div className="mt-8 flex gap-4">
+              {[Search, Heart, ShoppingCart, User].map((Icon, index) => (
+                <button
+                  key={index}
+                  className="rounded-full bg-slate-800 p-3 transition-all duration-300 hover:bg-blue-600"
+                  aria-label="Navigation icon"
+                >
+                  <Icon size={20} />
+                </button>
+              ))}
             </div>
           </div>
         )}
