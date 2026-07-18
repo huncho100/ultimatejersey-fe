@@ -1,32 +1,25 @@
-import Container from '../components/ui/Container';
-import Button from '../components/ui/Button';
+import Container from "../components/ui/Container";
+import SectionTitle from "../components/ui/SectionTitle";
+import ProductCard from "../components/products/ProductCard";
 
-const items = [
-  { name: 'Football Jersey', price: '$49' },
-  { name: 'Basketball Shoes', price: '$89' },
-  { name: 'Tennis Racket', price: '$120' },
-];
+import { products } from "../data/products";
 
 export default function Products() {
   return (
-    <section className="min-h-screen bg-gray-50 py-10">
+    <section className="min-h-screen bg-slate-50 py-16">
       <Container>
-        <h1 className="mb-8 text-3xl font-bold">Our Products</h1>
+        <SectionTitle
+          title="Our Products"
+          subtitle="Browse our collection of official football, basketball, national team, and retro jerseys."
+          align="left"
+        />
 
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-          {items.map((item) => (
-            <div
-              key={item.name}
-              className="rounded-lg border bg-white p-6 text-center shadow transition-shadow hover:shadow-lg"
-            >
-              <h2 className="mb-2 text-xl font-bold">{item.name}</h2>
-
-              <p className="mb-4 text-gray-600">{item.price}</p>
-
-              <Button size="sm">
-                Add to Cart
-              </Button>
-            </div>
+        <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 xl:grid-cols-4">
+          {products.map((product) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+            />
           ))}
         </div>
       </Container>
