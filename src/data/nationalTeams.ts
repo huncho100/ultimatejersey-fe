@@ -1,3 +1,466 @@
 import type { Product } from "../types/product";
 
-export const nationalTeamProducts: Product[] = [];
+// Argentina
+import argentinaAway from "../assets/images/products/national-teams/argentina-away.jpg";
+import argentinaHome from "../assets/images/products/national-teams/argentina-home.jpg";
+import messiArgentina from "../assets/images/products/national-teams/messi-argentina.jpg";
+
+// Brazil
+import brazilAway from "../assets/images/products/national-teams/brazil-away.jpg";
+import brazilAway2 from "../assets/images/products/national-teams/brasil-away2.jpg";
+import brazilHome from "../assets/images/products/national-teams/brazil-home.jpg";
+
+// France
+import franceAway from "../assets/images/products/national-teams/france-away.jpg";
+import franceHome from "../assets/images/products/national-teams/france-home.jpg";
+
+// Germany
+import germanyAway from "../assets/images/products/national-teams/germany-away.jpg";
+import germanyAway2 from "../assets/images/products/national-teams/germany-away2.jpg";
+import germanyHome from "../assets/images/products/national-teams/germany-home.jpg";
+
+// Norway
+import norwayHome from "../assets/images/products/national-teams/norway-home.jpg";
+import haalandNorway from "../assets/images/products/national-teams/haaland-norway.jpg";
+
+// Nigeria
+import nigeria1996 from "../assets/images/products/national-teams/nigeria-1996.jpg";
+import nigeriaHome from "../assets/images/products/national-teams/nigeria-home.jpg";
+import nigeriaNike from "../assets/images/products/national-teams/nigeria-nike.jpg";
+import nigeriaGreen from "../assets/images/products/national-teams/nigeria-green.jpg";
+import nigeriaGreen2 from "../assets/images/products/national-teams/nigeria-green2.jpg";
+import nigeriaWhite from "../assets/images/products/national-teams/nigeria-white.jpg";
+import nigeriaWhite2 from "../assets/images/products/national-teams/nigeria-white2.jpg";
+import nigeriaWhite3 from "../assets/images/products/national-teams/nigeria-white3.jpg";
+import nigeriaWomenGreen from "../assets/images/products/national-teams/nigeria-women-green.jpg";
+
+// Portugal
+import portugalAway from "../assets/images/products/national-teams/portugal-away.jpg";
+import portugalHome from "../assets/images/products/national-teams/portugal-home.jpg";
+import portugalRed from "../assets/images/products/national-teams/portugal-red.jpg";
+
+// Spain
+import spainAway from "../assets/images/products/national-teams/spain-away.jpg";
+import spainHome from "../assets/images/products/national-teams/spain-home.jpg";
+import lamineYamalSpain from "../assets/images/products/national-teams/lamineyamal-spain.jpg";
+
+export const nationalTeamProducts: Product[] = [
+  // Argentina
+  {
+    id: 301,
+    name: "Argentina Home Jersey",
+    team: "Argentina",
+    sport: "Football",
+    category: "Home",
+    league: "National Team",
+    brand: "Adidas",
+    price: 92,
+    oldPrice: 110,
+    rating: 5,
+    image: argentinaHome,
+    isFeatured: true,
+    isBestSeller: true,
+    inStock: true,
+  },
+  {
+    id: 302,
+    name: "Argentina Away Jersey",
+    team: "Argentina",
+    sport: "Football",
+    category: "Away",
+    league: "National Team",
+    brand: "Adidas",
+    price: 90,
+    oldPrice: 108,
+    rating: 4.8,
+    image: argentinaAway,
+    inStock: true,
+  },
+  {
+    id: 303,
+    name: "Messi Argentina Jersey",
+    team: "Argentina",
+    sport: "Football",
+    category: "Player Edition",
+    league: "National Team",
+    brand: "Adidas",
+    price: 99,
+    oldPrice: 120,
+    rating: 5,
+    image: messiArgentina,
+    isFeatured: true,
+    inStock: true,
+  },
+
+  // Brazil
+  {
+    id: 304,
+    name: "Brazil Home Jersey",
+    team: "Brazil",
+    sport: "Football",
+    category: "Home",
+    league: "National Team",
+    brand: "Nike",
+    price: 92,
+    oldPrice: 112,
+    rating: 4.9,
+    image: brazilHome,
+    isFeatured: true,
+    inStock: true,
+  },
+  {
+    id: 305,
+    name: "Brazil Away Jersey",
+    team: "Brazil",
+    sport: "Football",
+    category: "Away",
+    league: "National Team",
+    brand: "Nike",
+    price: 90,
+    oldPrice: 110,
+    rating: 4.8,
+    image: brazilAway,
+    inStock: true,
+  },
+  {
+    id: 306,
+    name: "Brazil Alternate Away Jersey",
+    team: "Brazil",
+    sport: "Football",
+    category: "Away",
+    league: "National Team",
+    brand: "Nike",
+    price: 91,
+    oldPrice: 111,
+    rating: 4.8,
+    image: brazilAway2,
+    inStock: true,
+  },
+
+  // France
+  {
+    id: 307,
+    name: "France Home Jersey",
+    team: "France",
+    sport: "Football",
+    category: "Home",
+    league: "National Team",
+    brand: "Nike",
+    price: 91,
+    oldPrice: 109,
+    rating: 4.9,
+    image: franceHome,
+    isFeatured: true,
+    inStock: true,
+  },
+  {
+    id: 308,
+    name: "France Away Jersey",
+    team: "France",
+    sport: "Football",
+    category: "Away",
+    league: "National Team",
+    brand: "Nike",
+    price: 90,
+    oldPrice: 108,
+    rating: 4.8,
+    image: franceAway,
+    inStock: true,
+  },
+
+  // Germany
+  {
+    id: 309,
+    name: "Germany Home Jersey",
+    team: "Germany",
+    sport: "Football",
+    category: "Home",
+    league: "National Team",
+    brand: "Adidas",
+    price: 92,
+    oldPrice: 112,
+    rating: 4.9,
+    image: germanyHome,
+    inStock: true,
+  },
+  {
+    id: 310,
+    name: "Germany Away Jersey",
+    team: "Germany",
+    sport: "Football",
+    category: "Away",
+    league: "National Team",
+    brand: "Adidas",
+    price: 90,
+    oldPrice: 108,
+    rating: 4.8,
+    image: germanyAway,
+    inStock: true,
+  },
+  {
+    id: 311,
+    name: "Germany Alternate Away Jersey",
+    team: "Germany",
+    sport: "Football",
+    category: "Away",
+    league: "National Team",
+    brand: "Adidas",
+    price: 90,
+    oldPrice: 108,
+    rating: 4.8,
+    image: germanyAway2,
+    inStock: true,
+  },
+
+  // Nigeria
+  {
+    id: 312,
+    name: "Nigeria 1996 Classic Jersey",
+    team: "Nigeria",
+    sport: "Football",
+    category: "Classic",
+    league: "National Team",
+    brand: "Nike",
+    price: 98,
+    oldPrice: 120,
+    rating: 5,
+    image: nigeria1996,
+    isFeatured: true,
+    isBestSeller: true,
+    inStock: true,
+  },
+  {
+    id: 313,
+    name: "Nigeria Home Jersey",
+    team: "Nigeria",
+    sport: "Football",
+    category: "Home",
+    league: "National Team",
+    brand: "Nike",
+    price: 89,
+    oldPrice: 109,
+    rating: 4.8,
+    image: nigeriaHome,
+    inStock: true,
+  },
+  {
+    id: 314,
+    name: "Nigeria Home Jersey (Green)",
+    team: "Nigeria",
+    sport: "Football",
+    category: "Home",
+    league: "National Team",
+    brand: "Nike",
+    price: 90,
+    oldPrice: 110,
+    rating: 4.9,
+    image: nigeriaGreen,
+    inStock: true,
+  },
+  {
+    id: 315,
+    name: "Nigeria Home Jersey (Alternate)",
+    team: "Nigeria",
+    sport: "Football",
+    category: "Home",
+    league: "National Team",
+    brand: "Nike",
+    price: 90,
+    oldPrice: 110,
+    rating: 4.8,
+    image: nigeriaGreen2,
+    inStock: true,
+  },
+  {
+    id: 316,
+    name: "Nigeria Away Jersey",
+    team: "Nigeria",
+    sport: "Football",
+    category: "Away",
+    league: "National Team",
+    brand: "Nike",
+    price: 89,
+    oldPrice: 109,
+    rating: 4.8,
+    image: nigeriaWhite,
+    inStock: true,
+  },
+  {
+    id: 317,
+    name: "Nigeria Away Jersey (Grey)",
+    team: "Nigeria",
+    sport: "Football",
+    category: "Away",
+    league: "National Team",
+    brand: "Nike",
+    price: 89,
+    oldPrice: 109,
+    rating: 4.8,
+    image: nigeriaWhite2,
+    inStock: true,
+  },
+  {
+    id: 318,
+    name: "Nigeria Special Edition",
+    team: "Nigeria",
+    sport: "Football",
+    category: "Special",
+    league: "National Team",
+    brand: "Nike",
+    price: 95,
+    oldPrice: 118,
+    rating: 5,
+    image: nigeriaNike,
+    isFeatured: true,
+    inStock: true,
+  },
+  {
+    id: 319,
+    name: "Nigeria Women's Jersey",
+    team: "Nigeria",
+    sport: "Football",
+    category: "Women's",
+    league: "National Team",
+    brand: "Nike",
+    price: 88,
+    oldPrice: 106,
+    rating: 4.8,
+    image: nigeriaWomenGreen,
+    inStock: true,
+  },
+  {
+    id: 320,
+    name: "Nigeria Away Jersey (White)",
+    team: "Nigeria",
+    sport: "Football",
+    category: "Away",
+    league: "National Team",
+    brand: "Nike",
+    price: 88,
+    oldPrice: 108,
+    rating: 4.7,
+    image: nigeriaWhite3,
+    inStock: true,
+  },
+
+  // Norway
+  {
+    id: 321,
+    name: "Norway Home Jersey",
+    team: "Norway",
+    sport: "Football",
+    category: "Home",
+    league: "National Team",
+    brand: "Nike",
+    price: 90,
+    oldPrice: 110,
+    rating: 4.8,
+    image: norwayHome,
+    inStock: true,
+  },
+  {
+    id: 322,
+    name: "Erling Haaland Norway Jersey",
+    team: "Norway",
+    sport: "Football",
+    category: "Player Edition",
+    league: "National Team",
+    brand: "Nike",
+    price: 99,
+    oldPrice: 120,
+    rating: 5,
+    image: haalandNorway,
+    isFeatured: true,
+    inStock: true,
+  },
+
+  // Portugal
+  {
+    id: 323,
+    name: "Portugal Home Jersey",
+    team: "Portugal",
+    sport: "Football",
+    category: "Home",
+    league: "National Team",
+    brand: "Nike",
+    price: 91,
+    oldPrice: 111,
+    rating: 4.9,
+    image: portugalHome,
+    inStock: true,
+  },
+  {
+    id: 324,
+    name: "Portugal Away Jersey",
+    team: "Portugal",
+    sport: "Football",
+    category: "Away",
+    league: "National Team",
+    brand: "Nike",
+    price: 90,
+    oldPrice: 110,
+    rating: 4.8,
+    image: portugalAway,
+    inStock: true,
+  },
+  {
+    id: 325,
+    name: "Portugal Special Edition",
+    team: "Portugal",
+    sport: "Football",
+    category: "Special",
+    league: "National Team",
+    brand: "Nike",
+    price: 95,
+    oldPrice: 118,
+    rating: 5,
+    image: portugalRed,
+    inStock: true,
+  },
+
+  // Spain
+  {
+    id: 326,
+    name: "Spain Home Jersey",
+    team: "Spain",
+    sport: "Football",
+    category: "Home",
+    league: "National Team",
+    brand: "Adidas",
+    price: 91,
+    oldPrice: 111,
+    rating: 4.9,
+    image: spainHome,
+    inStock: true,
+  },
+  {
+    id: 327,
+    name: "Spain Away Jersey",
+    team: "Spain",
+    sport: "Football",
+    category: "Away",
+    league: "National Team",
+    brand: "Adidas",
+    price: 90,
+    oldPrice: 110,
+    rating: 4.8,
+    image: spainAway,
+    inStock: true,
+  },
+  {
+    id: 328,
+    name: "Lamine Yamal Spain Jersey",
+    team: "Spain",
+    sport: "Football",
+    category: "Player Edition",
+    league: "National Team",
+    brand: "Adidas",
+    price: 99,
+    oldPrice: 120,
+    rating: 5,
+    image: lamineYamalSpain,
+    isFeatured: true,
+    isBestSeller: true,
+    inStock: true,
+  },
+];
