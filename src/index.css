@@ -1,1 +1,54 @@
 @import "tailwindcss";
+
+/* ========================================
+   Hero Floating Animations
+======================================== */
+
+@keyframes floatSlow {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-18px);
+  }
+}
+
+@keyframes floatMedium {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes floatFast {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+/* ========================================
+   Animation Utility Classes
+======================================== */
+
+.float-slow {
+  animation: floatSlow 7s ease-in-out infinite;
+}
+
+.float-medium {
+  animation: floatMedium 6s ease-in-out infinite;
+}
+
+.float-fast {
+  animation: floatFast 5s ease-in-out infinite;
+}
