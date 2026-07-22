@@ -7,6 +7,7 @@ import Home from "./pages/Home";
 import Products from "./pages/Products";
 import Clubs from "./pages/Clubs";
 import ProductDetails from "./pages/ProductDetails";
+import Search from "./pages/Search";
 
 export default function App() {
   return (
@@ -17,6 +18,7 @@ export default function App() {
 
         <main className="mx-auto w-full max-w-7xl flex-1 px-4">
           <Routes>
+
             <Route
               path="/"
               element={<Home />}
@@ -36,6 +38,12 @@ export default function App() {
               path="/clubs"
               element={<Clubs />}
             />
+
+            <Route
+              path="/search"
+              element={<Search />}
+            />
+
           </Routes>
         </main>
 
