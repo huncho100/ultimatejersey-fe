@@ -8,6 +8,7 @@ import Products from "./pages/Products";
 import Clubs from "./pages/Clubs";
 import ProductDetails from "./pages/ProductDetails";
 import Search from "./pages/Search";
+import Cart from "./pages/Cart";
 
 export default function App() {
   return (
@@ -32,6 +33,11 @@ export default function App() {
             <Route
               path="/products/:id"
               element={<ProductDetails />}
+            />
+
+            <Route
+              path="/cart"
+              element={<Cart />}
             />
 
             <Route

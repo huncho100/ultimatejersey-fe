@@ -12,6 +12,8 @@ import ProductSizes from "./ProductSizes";
 import QuantitySelector from "./QuantitySelector";
 import ProductActions from "./ProductActions";
 
+import { useCart } from "../../context/CartContext";
+
 import type { Product } from "../../types/product";
 
 interface ProductInfoProps {
@@ -21,12 +23,16 @@ interface ProductInfoProps {
 export default function ProductInfo({
   product,
 }: ProductInfoProps) {
+
+  const { addToCart } = useCart();
+
   return (
     <div className="space-y-6">
 
       {/* Breadcrumb */}
 
       <nav className="flex items-center gap-2 text-sm text-slate-500">
+
         <Link
           to="/"
           className="hover:text-blue-600"
@@ -48,6 +54,7 @@ export default function ProductInfo({
         <span className="font-medium text-slate-700">
           {product.team}
         </span>
+
       </nav>
 
       {/* Product Header */}
@@ -148,7 +155,9 @@ export default function ProductInfo({
 
       {/* Actions */}
 
-      <ProductActions />
+      <ProductActions
+        onAddToCart={() => addToCart(product)}
+      />
 
     </div>
   );
