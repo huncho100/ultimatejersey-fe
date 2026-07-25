@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import {
   ChevronLeft,
   ChevronRight,
@@ -10,9 +11,14 @@ import SectionTitle from "../components/ui/SectionTitle";
 import ProductCard from "../components/products/ProductCard";
 import ProductFilters from "../components/products/ProductFilters";
 
-import { products } from "../data/products";
+import { catalogProducts } from "../data/catalog";
 
 export default function Products() {
+  const [searchParams] = useSearchParams();
+
+  const isNewFilter =
+    searchParams.get("filter") === "new";
+
   const [filtersOpen, setFiltersOpen] = useState(true);
 
   // Filter State
@@ -22,7 +28,9 @@ export default function Products() {
   const [maxPrice, setMaxPrice] = useState(250);
 
   // Sort State
-  const [sortBy, setSortBy] = useState("featured");
+  const [sortBy, setSortBy] = useState(
+    isNewFilter ? "newest" : "featured"
+  );
 
   // Category Toggle
   function toggleCategory(category: string) {
@@ -57,12 +65,15 @@ export default function Products() {
     setSelectedLeagues([]);
     setSelectedBrands([]);
     setMaxPrice(250);
-    setSortBy("featured");
+
+    setSortBy(
+      isNewFilter ? "newest" : "featured"
+    );
   }
 
   // Filter + Sort Products
   const filteredProducts = useMemo(() => {
-    const filtered = products.filter((product) => {
+    const filtered = catalogProducts.filter((product) => {
       const categoryMatch =
         selectedCategories.length === 0 ||
         selectedCategories.includes(product.category);
@@ -96,8 +107,8 @@ export default function Products() {
         return [...filtered].sort((a, b) => b.rating - a.rating);
 
       case "newest":
-        return [...filtered].sort((a, b) =>
-          Number(b.isNew) - Number(a.isNew)
+        return [...filtered].sort(
+          (a, b) => Number(b.isNew) - Number(a.isNew)
         );
 
       default:
@@ -114,7 +125,6 @@ export default function Products() {
   return (
     <section className="min-h-screen bg-slate-50 py-16">
       <Container>
-
         <SectionTitle
           title="Our Products"
           subtitle="Browse our collection of official football, basketball, national team, and retro jerseys."
@@ -124,7 +134,6 @@ export default function Products() {
         {/* Top Bar */}
 
         <div className="mt-10 flex flex-wrap items-center justify-between gap-4">
-
           <button
             onClick={() => setFiltersOpen(!filtersOpen)}
             className="
@@ -157,7 +166,6 @@ export default function Products() {
           </button>
 
           <div className="flex items-center gap-6">
-
             <p className="text-sm text-slate-500">
               Showing{" "}
               <span className="font-semibold text-slate-900">
@@ -189,15 +197,12 @@ export default function Products() {
               <option value="price-low">Price: Low → High</option>
               <option value="price-high">Price: High → Low</option>
             </select>
-
           </div>
-
         </div>
 
         {/* Layout */}
 
         <div className="mt-8 flex gap-8">
-
           <ProductFilters
             open={filtersOpen}
             selectedCategories={selectedCategories}
@@ -239,9 +244,7 @@ export default function Products() {
               ))}
             </div>
           </div>
-
         </div>
-
       </Container>
     </section>
   );

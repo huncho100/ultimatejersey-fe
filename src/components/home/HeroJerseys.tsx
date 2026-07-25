@@ -1,35 +1,43 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
-import { featuredProducts } from "../../data/products";
-import { footballProducts } from "../../data/football";
-import { basketballProducts } from "../../data/basketball";
-import { nationalTeamProducts } from "../../data/nationalTeams";
-import { retroProducts } from "../../data/retro";
-
-const allProducts = [
-  ...featuredProducts,
-  ...footballProducts,
-  ...basketballProducts,
-  ...nationalTeamProducts,
-  ...retroProducts,
-];
+import { catalogProducts } from "../../data/catalog";
 
 export default function HeroJerseys() {
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
-  const jerseys = useMemo(() => {
-    const shuffled = [...allProducts].sort(() => Math.random() - 0.5);
-    return shuffled.slice(0, 3);
+  const [rotationSeed, setRotationSeed] = useState(0);
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setVisible(false);
+
+      setTimeout(() => {
+        setRotationSeed((prev) => prev + 1);
+        setVisible(true);
+      }, 450);
+    }, 30000);
+
+    return () => clearInterval(interval);
   }, []);
+
+  const jerseys = useMemo(() => {
+    return [...catalogProducts]
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 3);
+  }, [rotationSeed]);
 
   function handleMouseMove(
     e: React.MouseEvent<HTMLDivElement>
   ) {
     const rect = e.currentTarget.getBoundingClientRect();
 
-    const x = (e.clientX - rect.left - rect.width / 2) / 25;
-    const y = (e.clientY - rect.top - rect.height / 2) / 25;
+    const x =
+      (e.clientX - rect.left - rect.width / 2) / 25;
+
+    const y =
+      (e.clientY - rect.top - rect.height / 2) / 25;
 
     setPosition({ x, y });
   }
@@ -37,6 +45,8 @@ export default function HeroJerseys() {
   function handleMouseLeave() {
     setPosition({ x: 0, y: 0 });
   }
+
+  if (jerseys.length < 3) return null;
 
   return (
     <div
@@ -65,16 +75,23 @@ export default function HeroJerseys() {
               rotate(-12deg)
             `,
           }}
-          className="
+          className={`
             float-medium
             w-56
             cursor-pointer
             rounded-2xl
             shadow-[0_20px_50px_rgba(0,0,0,.25),0_50px_100px_rgba(0,0,0,.35)]
             transition-all
-            duration-300
+            duration-700
+            ease-in-out
+            ${
+              visible
+                ? "opacity-100 translate-y-0 scale-100"
+                : "opacity-0 translate-y-8 scale-95"
+            }
+            hover:z-50
             hover:scale-110
-          "
+          `}
         />
       </Link>
 
@@ -92,16 +109,23 @@ export default function HeroJerseys() {
               translate(${position.x * .6}px, ${position.y * .6}px)
             `,
           }}
-          className="
+          className={`
             float-slow
             w-72
             cursor-pointer
             rounded-2xl
             shadow-[0_25px_60px_rgba(0,0,0,.35),0_60px_120px_rgba(0,0,0,.45)]
             transition-all
-            duration-300
+            duration-700
+            ease-in-out
+            ${
+              visible
+                ? "opacity-100 translate-y-0 scale-100"
+                : "opacity-0 -translate-y-8 scale-95"
+            }
+            hover:z-50
             hover:scale-110
-          "
+          `}
         />
       </Link>
 
@@ -120,16 +144,23 @@ export default function HeroJerseys() {
               rotate(12deg)
             `,
           }}
-          className="
+          className={`
             float-fast
             w-56
             cursor-pointer
             rounded-2xl
             shadow-[0_20px_50px_rgba(0,0,0,.25),0_50px_100px_rgba(0,0,0,.35)]
             transition-all
-            duration-300
+            duration-700
+            ease-in-out
+            ${
+              visible
+                ? "opacity-100 translate-y-0 scale-100"
+                : "opacity-0 translate-y-8 scale-95"
+            }
+            hover:z-50
             hover:scale-110
-          "
+          `}
         />
       </Link>
 
