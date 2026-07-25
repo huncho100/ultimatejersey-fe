@@ -1,8 +1,18 @@
+import { Link } from "react-router-dom";
+
 import Container from "../ui/Container";
 import Button from "../ui/Button";
 import HeroJerseys from "./HeroJerseys";
 
-export default function Hero() {
+import type { Product } from "../../types/product";
+
+interface HeroProps {
+  heroProducts: Product[];
+}
+
+export default function Hero({
+  heroProducts,
+}: HeroProps) {
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-blue-950 to-indigo-900 text-white">
 
@@ -40,13 +50,22 @@ export default function Hero() {
 
             {/* CTA Buttons */}
             <div className="mt-8 flex flex-wrap gap-4">
-              <Button size="lg">
-                Shop Now
-              </Button>
 
-              <Button variant="outline" size="lg">
-                Browse Collections
-              </Button>
+              <Link to="/products">
+                <Button size="lg">
+                  Shop Now
+                </Button>
+              </Link>
+
+              <Link to="/clubs">
+                <Button
+                  variant="outline"
+                  size="lg"
+                >
+                  Browse Collections
+                </Button>
+              </Link>
+
             </div>
 
             {/* Trust Metrics */}
@@ -94,7 +113,9 @@ export default function Hero() {
 
           {/* Right Content */}
           <div className="flex justify-center">
-            <HeroJerseys />
+            <HeroJerseys
+              products={heroProducts}
+            />
           </div>
 
         </div>

@@ -1,3 +1,7 @@
+import { useState } from "react";
+
+import Button from "../ui/Button";
+
 interface CartSummaryProps {
   subtotal: number;
 }
@@ -5,53 +9,153 @@ interface CartSummaryProps {
 export default function CartSummary({
   subtotal,
 }: CartSummaryProps) {
+  const [promoCode, setPromoCode] = useState("");
+
   const shipping = subtotal > 0 ? 15 : 0;
 
-  const total = subtotal + shipping;
+  const tax = subtotal * 0.075;
+
+  const total = subtotal + shipping + tax;
 
   return (
-    <div className="sticky top-24 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+    <div
+      className="
+        sticky
+        top-24
+        rounded-2xl
+        border
+        border-slate-200
+        bg-white
+        p-6
+        shadow-sm
+      "
+    >
+      {/* Header */}
 
-      <h2 className="text-2xl font-bold">
+      <h2 className="text-2xl font-bold text-slate-900">
         Order Summary
       </h2>
 
-      <div className="mt-6 space-y-4">
+      {/* Promo Code */}
 
-        <div className="flex justify-between">
-          <span>Subtotal</span>
-          <span>${subtotal.toFixed(2)}</span>
-        </div>
+      <div className="mt-6">
 
-        <div className="flex justify-between">
-          <span>Shipping</span>
-          <span>${shipping.toFixed(2)}</span>
-        </div>
+        <label
+          className="
+            mb-2
+            block
+            text-sm
+            font-semibold
+            text-slate-700
+          "
+        >
+          Promo Code
+        </label>
 
-        <hr />
+        <div className="flex gap-2">
 
-        <div className="flex justify-between text-xl font-bold">
-          <span>Total</span>
-          <span>${total.toFixed(2)}</span>
+          <input
+            type="text"
+            value={promoCode}
+            onChange={(e) =>
+              setPromoCode(e.target.value)
+            }
+            placeholder="Enter code"
+            className="
+              flex-1
+              rounded-xl
+              border
+              border-slate-300
+              px-4
+              py-3
+              outline-none
+              transition
+              focus:border-blue-600
+            "
+          />
+
+          <Button
+            variant="outline"
+            size="md"
+          >
+            Apply
+          </Button>
+
         </div>
 
       </div>
 
-      <button
+      {/* Totals */}
+
+      <div className="mt-8 space-y-4">
+
+        <div className="flex justify-between text-slate-600">
+
+          <span>Subtotal</span>
+
+          <span className="font-semibold">
+            ${subtotal.toFixed(2)}
+          </span>
+
+        </div>
+
+        <div className="flex justify-between text-slate-600">
+
+          <span>Shipping</span>
+
+          <span className="font-semibold">
+            ${shipping.toFixed(2)}
+          </span>
+
+        </div>
+
+        <div className="flex justify-between text-slate-600">
+
+          <span>Estimated Tax</span>
+
+          <span className="font-semibold">
+            ${tax.toFixed(2)}
+          </span>
+
+        </div>
+
+        <hr className="border-slate-200" />
+
+        <div className="flex justify-between text-2xl font-bold text-slate-900">
+
+          <span>Grand Total</span>
+
+          <span>${total.toFixed(2)}</span>
+
+        </div>
+
+      </div>
+
+      {/* Checkout */}
+
+      <div className="mt-8">
+
+        <Button
+          fullWidth
+          size="lg"
+        >
+          Proceed to Checkout
+        </Button>
+
+      </div>
+
+      {/* Trust Message */}
+
+      <p
         className="
-          mt-8
-          w-full
-          rounded-xl
-          bg-blue-600
-          py-3
-          font-semibold
-          text-white
-          transition
-          hover:bg-blue-700
+          mt-5
+          text-center
+          text-sm
+          text-slate-500
         "
       >
-        Proceed to Checkout
-      </button>
+        Secure checkout powered by SSL encryption.
+      </p>
 
     </div>
   );

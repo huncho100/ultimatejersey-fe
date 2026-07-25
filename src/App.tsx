@@ -6,9 +6,12 @@ import Footer from "./components/layouts/Footer";
 import Home from "./pages/Home";
 import Products from "./pages/Products";
 import Clubs from "./pages/Clubs";
+import NationalTeams from "./pages/NationalTeams";
+import Retro from "./pages/Retro";
 import ProductDetails from "./pages/ProductDetails";
 import Search from "./pages/Search";
 import Cart from "./pages/Cart";
+import Wishlist from "./pages/Wishlist";
 
 export default function App() {
   return (
@@ -18,6 +21,7 @@ export default function App() {
         <Navbar />
 
         <main className="mx-auto w-full max-w-7xl flex-1 px-4">
+
           <Routes>
 
             <Route
@@ -41,8 +45,23 @@ export default function App() {
             />
 
             <Route
+              path="/wishlist"
+              element={<Wishlist />}
+            />
+
+            <Route
               path="/clubs"
               element={<Clubs />}
+            />
+
+            <Route
+              path="/national-teams"
+              element={<NationalTeams />}
+            />
+
+            <Route
+              path="/retro-kits"
+              element={<Retro />}
             />
 
             <Route
@@ -51,6 +70,7 @@ export default function App() {
             />
 
           </Routes>
+
         </main>
 
         <Footer />

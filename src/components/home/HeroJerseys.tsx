@@ -1,11 +1,27 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 
-import manUnited from "../../assets/images/products/football/manchester-united-home.jpg";
-import lakers from "../../assets/images/products/basketball/lakers-white.jpg";
-import nigeria from "../../assets/images/products/national-teams/nigeria-home.jpg";
+import { featuredProducts } from "../../data/products";
+import { footballProducts } from "../../data/football";
+import { basketballProducts } from "../../data/basketball";
+import { nationalTeamProducts } from "../../data/nationalTeams";
+import { retroProducts } from "../../data/retro";
+
+const allProducts = [
+  ...featuredProducts,
+  ...footballProducts,
+  ...basketballProducts,
+  ...nationalTeamProducts,
+  ...retroProducts,
+];
 
 export default function HeroJerseys() {
   const [position, setPosition] = useState({ x: 0, y: 0 });
+
+  const jerseys = useMemo(() => {
+    const shuffled = [...allProducts].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, 3);
+  }, []);
 
   function handleMouseMove(
     e: React.MouseEvent<HTMLDivElement>
@@ -29,82 +45,96 @@ export default function HeroJerseys() {
       onMouseLeave={handleMouseLeave}
     >
       {/* Ambient Glow */}
+
       <div className="absolute h-96 w-96 rounded-full bg-blue-500/20 blur-[120px]" />
+
       <div className="absolute right-20 top-24 h-40 w-40 rounded-full bg-cyan-400/20 blur-[90px]" />
 
-      {/* Nigeria */}
-      <img
-        src={nigeria}
-        alt="Nigeria Jersey"
-        style={{
-          transform: `
-            translate(${position.x * -1.2}px, ${position.y * -1.2}px)
-            rotate(-12deg)
-          `,
-        }}
-        className="
-          float-medium
-          absolute
-          left-4
-          top-24
-          z-10
-          w-56
-          rounded-2xl
-          shadow-[0_20px_50px_rgba(0,0,0,.25),0_50px_100px_rgba(0,0,0,.35)]
-          transition-transform
-          duration-300
-          hover:scale-105
-        "
-      />
+      {/* Left Jersey */}
 
-      {/* Manchester United */}
-      <img
-        src={manUnited}
-        alt="Manchester United Jersey"
-        style={{
-          transform: `
-            translate(${position.x * 0.6}px, ${position.y * 0.6}px)
-          `,
-        }}
-        className="
-          float-slow
-          absolute
-          z-30
-          w-72
-          rounded-2xl
-          shadow-[0_25px_60px_rgba(0,0,0,.35),0_60px_120px_rgba(0,0,0,.45)]
-          transition-transform
-          duration-300
-          hover:scale-110
-        "
-      />
+      <Link
+        to={`/products/${jerseys[0].id}`}
+        className="absolute left-4 top-24 z-10"
+      >
+        <img
+          src={jerseys[0].image}
+          alt={jerseys[0].team}
+          style={{
+            transform: `
+              translate(${position.x * -1.2}px, ${position.y * -1.2}px)
+              rotate(-12deg)
+            `,
+          }}
+          className="
+            float-medium
+            w-56
+            cursor-pointer
+            rounded-2xl
+            shadow-[0_20px_50px_rgba(0,0,0,.25),0_50px_100px_rgba(0,0,0,.35)]
+            transition-all
+            duration-300
+            hover:scale-110
+          "
+        />
+      </Link>
 
-      {/* Lakers */}
-      <img
-        src={lakers}
-        alt="Lakers Jersey"
-        style={{
-          transform: `
-            translate(${position.x * 1.2}px, ${position.y * 1.2}px)
-            rotate(12deg)
-          `,
-        }}
-        className="
-          float-fast
-          absolute
-          right-4
-          top-24
-          z-20
-          w-56
-          rounded-2xl
-          shadow-[0_20px_50px_rgba(0,0,0,.25),0_50px_100px_rgba(0,0,0,.35)]
-          transition-transform
-          duration-300
-          hover:scale-105
-        "
-      />
+      {/* Center Jersey */}
+
+      <Link
+        to={`/products/${jerseys[1].id}`}
+        className="absolute z-30"
+      >
+        <img
+          src={jerseys[1].image}
+          alt={jerseys[1].team}
+          style={{
+            transform: `
+              translate(${position.x * .6}px, ${position.y * .6}px)
+            `,
+          }}
+          className="
+            float-slow
+            w-72
+            cursor-pointer
+            rounded-2xl
+            shadow-[0_25px_60px_rgba(0,0,0,.35),0_60px_120px_rgba(0,0,0,.45)]
+            transition-all
+            duration-300
+            hover:scale-110
+          "
+        />
+      </Link>
+
+      {/* Right Jersey */}
+
+      <Link
+        to={`/products/${jerseys[2].id}`}
+        className="absolute right-4 top-24 z-20"
+      >
+        <img
+          src={jerseys[2].image}
+          alt={jerseys[2].team}
+          style={{
+            transform: `
+              translate(${position.x * 1.2}px, ${position.y * 1.2}px)
+              rotate(12deg)
+            `,
+          }}
+          className="
+            float-fast
+            w-56
+            cursor-pointer
+            rounded-2xl
+            shadow-[0_20px_50px_rgba(0,0,0,.25),0_50px_100px_rgba(0,0,0,.35)]
+            transition-all
+            duration-300
+            hover:scale-110
+          "
+        />
+      </Link>
 
       {/* Glass Card */}
+
       <div
         className="
           absolute
@@ -128,7 +158,7 @@ export default function HeroJerseys() {
         </h3>
 
         <p className="mt-1 text-sm text-slate-300">
-          Nike • Adidas • Puma • Umbro
+          Click any jersey to explore →
         </p>
       </div>
     </div>

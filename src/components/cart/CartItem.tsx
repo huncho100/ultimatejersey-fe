@@ -23,21 +23,45 @@ export default function CartItem({
   onRemove,
 }: CartItemProps) {
   return (
-    <div className="flex gap-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+    <div
+      className="
+        flex
+        flex-col
+        gap-6
+        rounded-2xl
+        border
+        border-slate-200
+        bg-white
+        p-5
+        shadow-sm
+        md:flex-row
+      "
+    >
+      {/* Product Image */}
 
-      {/* Image */}
-
-      <div className="flex h-32 w-32 items-center justify-center rounded-xl bg-slate-100 p-3">
-
+      <div
+        className="
+          flex
+          h-40
+          w-full
+          items-center
+          justify-center
+          rounded-xl
+          bg-slate-100
+          p-4
+          md:h-32
+          md:w-32
+          md:flex-shrink-0
+        "
+      >
         <img
           src={item.image}
           alt={item.team}
-          className="max-h-full object-contain"
+          className="max-h-full max-w-full object-contain"
         />
-
       </div>
 
-      {/* Info */}
+      {/* Product Details */}
 
       <div className="flex flex-1 flex-col justify-between">
 
@@ -47,7 +71,7 @@ export default function CartItem({
             {item.sport}
           </p>
 
-          <h3 className="text-2xl font-bold">
+          <h3 className="mt-1 text-2xl font-bold text-slate-900">
             {item.team}
           </h3>
 
@@ -57,37 +81,72 @@ export default function CartItem({
 
         </div>
 
-        <div className="flex items-center justify-between">
+        <div
+          className="
+            mt-6
+            flex
+            flex-col
+            gap-4
+            md:flex-row
+            md:items-center
+            md:justify-between
+          "
+        >
+          {/* Quantity Controls */}
 
-          {/* Quantity */}
-
-          <div className="flex items-center gap-3 rounded-xl border px-3 py-2">
-
-            <button onClick={onDecrease}>
-              <Minus size={16} />
+          <div
+            className="
+              flex
+              w-fit
+              items-center
+              gap-4
+              rounded-xl
+              border
+              border-slate-300
+              px-4
+              py-2
+            "
+          >
+            <button
+              onClick={onDecrease}
+              className="transition hover:text-blue-600"
+            >
+              <Minus size={18} />
             </button>
 
             <span className="w-6 text-center font-bold">
               {item.quantity}
             </span>
 
-            <button onClick={onIncrease}>
-              <Plus size={16} />
+            <button
+              onClick={onIncrease}
+              className="transition hover:text-blue-600"
+            >
+              <Plus size={18} />
             </button>
-
           </div>
 
-          {/* Price */}
+          {/* Price & Remove */}
 
-          <div className="text-right">
+          <div className="text-left md:text-right">
 
-            <p className="text-xl font-bold">
+            <p className="text-2xl font-bold text-slate-900">
               ${(item.price * item.quantity).toFixed(2)}
             </p>
 
             <button
               onClick={onRemove}
-              className="mt-2 flex items-center gap-2 text-sm text-red-500 hover:text-red-700"
+              className="
+                mt-2
+                inline-flex
+                items-center
+                gap-2
+                text-sm
+                font-medium
+                text-red-500
+                transition-colors
+                hover:text-red-700
+              "
             >
               <Trash2 size={16} />
               Remove
