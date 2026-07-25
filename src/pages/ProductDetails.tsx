@@ -2,7 +2,7 @@ import { useParams, Navigate } from "react-router-dom";
 
 import Container from "../components/ui/Container";
 
-import { products } from "../data/products";
+import { catalogProducts } from "../data/catalog";
 
 import ProductGallery from "../components/products/ProductGallery";
 import ProductInfo from "../components/products/ProductInfo";
@@ -12,7 +12,7 @@ import RelatedProducts from "../components/products/RelatedProducts";
 export default function ProductDetails() {
   const { id } = useParams();
 
-  const product = products.find(
+  const product = catalogProducts.find(
     (item) => item.id === Number(id)
   );
 
@@ -20,12 +20,16 @@ export default function ProductDetails() {
     return <Navigate to="/products" replace />;
   }
 
-  const relatedProducts = products
-    .filter(
-      (item) =>
-        item.id !== product.id &&
-        item.league === product.league
-    )
+  const relatedProducts = catalogProducts
+    .filter((item) => {
+      if (item.id === product.id) return false;
+
+      return (
+        item.team === product.team ||
+        item.league === product.league ||
+        item.category === product.category
+      );
+    })
     .slice(0, 4);
 
   return (

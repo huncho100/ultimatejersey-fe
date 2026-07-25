@@ -27,9 +27,28 @@ export default function Hero({
           <div>
 
             {/* Badge */}
-            <span className="inline-block rounded-full bg-amber-500 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-slate-900 shadow-lg">
+            <Link
+              to="/products?sort=newest"
+              className="
+                inline-block
+                rounded-full
+                bg-amber-500
+                px-4
+                py-1.5
+                text-xs
+                font-semibold
+                uppercase
+                tracking-[0.2em]
+                text-slate-900
+                shadow-lg
+                transition-all
+                duration-300
+                hover:scale-105
+                hover:bg-amber-400
+              "
+            >
               NEW ARRIVALS
-            </span>
+            </Link>
 
             {/* Heading */}
             <h1 className="mt-5 text-4xl font-black leading-[1.05] tracking-tight drop-shadow-xl sm:text-5xl lg:text-6xl">
