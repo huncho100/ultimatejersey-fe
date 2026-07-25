@@ -16,11 +16,14 @@ import Container from "../ui/Container";
 import Logo from "../ui/Logo";
 
 import { useCart } from "../../context/CartContext";
+import { useWishlist } from "../../context/WishlistContext";
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const { cartItems } = useCart();
+
+  const { totalWishlistItems } = useWishlist();
 
   const cartCount = cartItems.reduce(
     (total, item) => total + item.quantity,
@@ -75,12 +78,41 @@ export default function Navbar() {
               <Search size={20} />
             </NavLink>
 
-            <button
-              className="rounded-full p-2 transition-all duration-300 hover:bg-slate-800 hover:text-blue-400"
+            {/* Wishlist */}
+
+            <NavLink
+              to="/wishlist"
+              className="relative rounded-full p-2 transition-all duration-300 hover:bg-slate-800 hover:text-blue-400"
               aria-label="Wishlist"
             >
+
               <Heart size={20} />
-            </button>
+
+              {totalWishlistItems > 0 && (
+
+                <span
+                  className="
+                    absolute
+                    -right-1
+                    -top-1
+                    flex
+                    h-5
+                    w-5
+                    items-center
+                    justify-center
+                    rounded-full
+                    bg-red-500
+                    text-[11px]
+                    font-bold
+                    text-white
+                  "
+                >
+                  {totalWishlistItems}
+                </span>
+
+              )}
+
+            </NavLink>
 
             {/* Cart */}
 
@@ -185,9 +217,43 @@ export default function Navbar() {
                 <Search size={20} />
               </NavLink>
 
-              <button className="rounded-full bg-slate-800 p-3 transition-all duration-300 hover:bg-blue-600">
+              {/* Wishlist */}
+
+              <NavLink
+                to="/wishlist"
+                onClick={() => setMobileOpen(false)}
+                className="relative rounded-full bg-slate-800 p-3 transition-all duration-300 hover:bg-blue-600"
+              >
+
                 <Heart size={20} />
-              </button>
+
+                {totalWishlistItems > 0 && (
+
+                  <span
+                    className="
+                      absolute
+                      -right-1
+                      -top-1
+                      flex
+                      h-5
+                      w-5
+                      items-center
+                      justify-center
+                      rounded-full
+                      bg-red-500
+                      text-[11px]
+                      font-bold
+                      text-white
+                    "
+                  >
+                    {totalWishlistItems}
+                  </span>
+
+                )}
+
+              </NavLink>
+
+              {/* Cart */}
 
               <NavLink
                 to="/cart"

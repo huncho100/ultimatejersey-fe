@@ -6,19 +6,45 @@ import {
 
 import Button from "../ui/Button";
 
+import { useWishlist } from "../../context/WishlistContext";
+
+import type { Product } from "../../types/product";
+
 interface ProductActionsProps {
+  product: Product;
+
   disabled?: boolean;
+
   onAddToCart?: () => void;
+
   onBuyNow?: () => void;
-  onWishlist?: () => void;
 }
 
 export default function ProductActions({
+  product,
   disabled = false,
   onAddToCart,
   onBuyNow,
-  onWishlist,
 }: ProductActionsProps) {
+
+  const {
+    wishlistItems,
+    addToWishlist,
+    removeFromWishlist,
+  } = useWishlist();
+
+  const isWishlisted = wishlistItems.some(
+    (item) => item.id === product.id
+  );
+
+  function handleWishlist() {
+    if (isWishlisted) {
+      removeFromWishlist(product.id);
+    } else {
+      addToWishlist(product);
+    }
+  }
+
   return (
     <div className="space-y-3">
 
@@ -28,8 +54,7 @@ export default function ProductActions({
         size="sm"
         className="
           flex
-          w-half
-          md:w-full
+          w-full
           items-center
           justify-center
           gap-2
@@ -51,8 +76,7 @@ export default function ProductActions({
         size="sm"
         className="
           flex
-          w-half
-          md:w-full
+          w-full
           items-center
           justify-center
           gap-2
@@ -71,29 +95,35 @@ export default function ProductActions({
 
       <button
         type="button"
-        onClick={onWishlist}
-        className="
+        onClick={handleWishlist}
+        className={`
           flex
-          w-half
-          md:w-full
+          w-full
           items-center
           justify-center
           gap-2
           rounded-xl
           border
-          border-slate-300
-          bg-white
           py-2
           text-base
           font-medium
-          text-slate-700
           transition-colors
-          hover:border-red-500
-          hover:text-red-500
-        "
+
+          ${
+            isWishlisted
+              ? "border-red-500 bg-red-500 text-white"
+              : "border-slate-300 bg-white text-slate-700 hover:border-red-500 hover:text-red-500"
+          }
+        `}
       >
-        <Heart size={18} />
-        Add to Wishlist
+        <Heart
+          size={18}
+          fill={isWishlisted ? "currentColor" : "none"}
+        />
+
+        {isWishlisted
+          ? "Remove from Wishlist"
+          : "Add to Wishlist"}
       </button>
 
     </div>

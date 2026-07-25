@@ -4,6 +4,7 @@ import { Heart, Star } from "lucide-react";
 import Button from "../ui/Button";
 
 import { useCart } from "../../context/CartContext";
+import { useWishlist } from "../../context/WishlistContext";
 
 import type { Product } from "../../types/product";
 
@@ -16,6 +17,29 @@ export default function ProductCard({
 }: ProductCardProps) {
 
   const { addToCart } = useCart();
+
+  const {
+    wishlistItems,
+    addToWishlist,
+    removeFromWishlist,
+  } = useWishlist();
+
+  const isWishlisted = wishlistItems.some(
+    (item) => item.id === product.id
+  );
+
+  function handleWishlistClick(
+    e: React.MouseEvent<HTMLButtonElement>
+  ) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (isWishlisted) {
+      removeFromWishlist(product.id);
+    } else {
+      addToWishlist(product);
+    }
+  }
 
   return (
     <Link
@@ -35,10 +59,29 @@ export default function ProductCard({
         {/* Wishlist */}
 
         <button
-          className="absolute right-4 top-4 z-10 rounded-full bg-white/90 p-2 shadow transition hover:bg-red-500 hover:text-white"
-          onClick={(e) => e.preventDefault()}
+          onClick={handleWishlistClick}
+          className={`
+            absolute
+            right-4
+            top-4
+            z-10
+            rounded-full
+            p-2
+            shadow
+            transition-all
+            duration-300
+
+            ${
+              isWishlisted
+                ? "bg-red-500 text-white"
+                : "bg-white/90 text-slate-700 hover:bg-red-500 hover:text-white"
+            }
+          `}
         >
-          <Heart size={18} />
+          <Heart
+            size={18}
+            fill={isWishlisted ? "currentColor" : "none"}
+          />
         </button>
 
         {/* Product Image */}

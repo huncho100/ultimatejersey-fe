@@ -18,13 +18,10 @@ export const retroProducts: Product[] = [
     category: "Retro",
     league: "National Team",
     brand: "Nike",
-
     price: 89,
     oldPrice: 109,
     rating: 4.9,
-
     image: nigeriaRetro,
-
     isFeatured: true,
     isNew: true,
     isBestSeller: true,
@@ -39,13 +36,10 @@ export const retroProducts: Product[] = [
     category: "Retro",
     league: "National Team",
     brand: "Nike",
-
     price: 90,
     oldPrice: 110,
     rating: 4.8,
-
     image: nigeriaRetroGreen,
-
     isFeatured: true,
     inStock: true,
   },
@@ -58,13 +52,10 @@ export const retroProducts: Product[] = [
     category: "Retro",
     league: "La Liga",
     brand: "Nike",
-
     price: 88,
     oldPrice: 105,
     rating: 4.8,
-
     image: barcaRetro,
-
     inStock: true,
   },
 
@@ -76,13 +67,10 @@ export const retroProducts: Product[] = [
     category: "Retro",
     league: "Serie A",
     brand: "Umbro",
-
     price: 87,
     oldPrice: 104,
     rating: 4.7,
-
     image: interRetro,
-
     inStock: true,
   },
 
@@ -94,13 +82,10 @@ export const retroProducts: Product[] = [
     category: "Retro",
     league: "National Team",
     brand: "Umbro",
-
     price: 89,
     oldPrice: 109,
     rating: 4.8,
-
     image: englandRetro,
-
     isNew: true,
     inStock: true,
   },
@@ -113,30 +98,25 @@ export const retroProducts: Product[] = [
     category: "Retro",
     league: "Premier League",
     brand: "Adidas",
-
     price: 89,
     oldPrice: 109,
     rating: 4.8,
-
     image: liverpoolRetro,
-
     inStock: true,
   },
+
   {
-    id: 406,
+    id: 407,
     name: "Away Jersey",
     team: "Nigeria",
     sport: "Football",
-    category: "away",
+    category: "Away",
     league: "National Team",
     brand: "Nike",
-
     price: 89,
     oldPrice: 109,
     rating: 4.8,
-
     image: nigeriaWhite,
-
     inStock: true,
   },
 ];

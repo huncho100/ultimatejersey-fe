@@ -156,6 +156,7 @@ export default function ProductInfo({
       {/* Actions */}
 
       <ProductActions
+        product={product}
         onAddToCart={() => addToCart(product)}
       />
 
