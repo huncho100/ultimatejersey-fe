@@ -4,15 +4,7 @@ import Container from "../ui/Container";
 import Button from "../ui/Button";
 import HeroJerseys from "./HeroJerseys";
 
-import type { Product } from "../../types/product";
-
-interface HeroProps {
-  heroProducts: Product[];
-}
-
-export default function Hero({
-  heroProducts,
-}: HeroProps) {
+export default function Hero() {
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-blue-950 to-indigo-900 text-white">
 
@@ -132,9 +124,7 @@ export default function Hero({
 
           {/* Right Content */}
           <div className="flex justify-center">
-            <HeroJerseys
-              products={heroProducts}
-            />
+            <HeroJerseys />
           </div>
 
         </div>
