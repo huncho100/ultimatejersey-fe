@@ -1,8 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import Navbar from "./components/layouts/Navbar";
-import Footer from "./components/layouts/Footer";
+import MainLayout from "./components/layouts/MainLayout";
+import AuthPagesLayout from "./components/layouts/AuthPagesLayout";
 
+// Store Pages
 import Home from "./pages/Home";
 import Products from "./pages/Products";
 import Clubs from "./pages/Clubs";
@@ -13,69 +14,99 @@ import Search from "./pages/Search";
 import Cart from "./pages/Cart";
 import Wishlist from "./pages/Wishlist";
 
+// Authentication Pages
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
+
 export default function App() {
   return (
     <Router>
-      <div className="flex min-h-screen flex-col">
+      <Routes>
 
-        <Navbar />
+        {/* ==========================
+            STORE LAYOUT
+        ========================== */}
 
-        <main className="mx-auto w-full max-w-7xl flex-1 px-4">
+        <Route element={<MainLayout />}>
 
-          <Routes>
+          <Route
+            path="/"
+            element={<Home />}
+          />
 
-            <Route
-              path="/"
-              element={<Home />}
-            />
+          <Route
+            path="/products"
+            element={<Products />}
+          />
 
-            <Route
-              path="/products"
-              element={<Products />}
-            />
+          <Route
+            path="/products/:id"
+            element={<ProductDetails />}
+          />
 
-            <Route
-              path="/products/:id"
-              element={<ProductDetails />}
-            />
+          <Route
+            path="/clubs"
+            element={<Clubs />}
+          />
 
-            <Route
-              path="/cart"
-              element={<Cart />}
-            />
+          <Route
+            path="/national-teams"
+            element={<NationalTeams />}
+          />
 
-            <Route
-              path="/wishlist"
-              element={<Wishlist />}
-            />
+          <Route
+            path="/retro-kits"
+            element={<Retro />}
+          />
 
-            <Route
-              path="/clubs"
-              element={<Clubs />}
-            />
+          <Route
+            path="/search"
+            element={<Search />}
+          />
 
-            <Route
-              path="/national-teams"
-              element={<NationalTeams />}
-            />
+          <Route
+            path="/cart"
+            element={<Cart />}
+          />
 
-            <Route
-              path="/retro-kits"
-              element={<Retro />}
-            />
+          <Route
+            path="/wishlist"
+            element={<Wishlist />}
+          />
 
-            <Route
-              path="/search"
-              element={<Search />}
-            />
+        </Route>
 
-          </Routes>
+        {/* ==========================
+            AUTH LAYOUT
+        ========================== */}
 
-        </main>
+        <Route element={<AuthPagesLayout />}>
 
-        <Footer />
+          <Route
+            path="/login"
+            element={<Login />}
+          />
 
-      </div>
+          <Route
+            path="/register"
+            element={<Register />}
+          />
+
+          <Route
+            path="/forgot-password"
+            element={<ForgotPassword />}
+          />
+
+          <Route
+            path="/reset-password"
+            element={<ResetPassword />}
+          />
+
+        </Route>
+
+      </Routes>
     </Router>
   );
 }
