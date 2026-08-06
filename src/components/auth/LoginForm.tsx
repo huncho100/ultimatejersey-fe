@@ -1,25 +1,51 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import Button from "../ui/Button";
 import PasswordInput from "./PasswordInput";
+import { useAuth } from "../../context/AuthContext";
 
 export default function LoginForm() {
+  const navigate = useNavigate();
+
+  const { login } = useAuth();
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const [rememberMe, setRememberMe] = useState(false);
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    console.log({
-      email,
-      password,
-      rememberMe,
-    });
+    setError("");
 
-    // Backend integration comes later.
+    if (!email || !password) {
+      setError("Please enter your email and password.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      await login({
+        email,
+        password,
+      });
+
+      navigate("/");
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Login failed."
+      );
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -27,6 +53,23 @@ export default function LoginForm() {
       onSubmit={handleSubmit}
       className="space-y-6"
     >
+      {error && (
+        <div
+          className="
+            rounded-xl
+            border
+            border-red-300
+            bg-red-50
+            px-4
+            py-3
+            text-sm
+            text-red-700
+          "
+        >
+          {error}
+        </div>
+      )}
+
       {/* Email */}
 
       <div className="space-y-2">
@@ -70,11 +113,13 @@ export default function LoginForm() {
         id="password"
         label="Password"
         value={password}
-        onChange={(e) => setPassword(e.target.value)}
+        onChange={(e) =>
+          setPassword(e.target.value)
+        }
         required
       />
 
-      {/* Remember + Forgot */}
+      {/* Remember Me + Forgot Password */}
 
       <div className="flex items-center justify-between">
 
@@ -120,8 +165,9 @@ export default function LoginForm() {
         type="submit"
         size="lg"
         className="w-full"
+        disabled={loading}
       >
-        Sign In
+        {loading ? "Signing In..." : "Sign In"}
       </Button>
 
       {/* Divider */}
@@ -129,22 +175,18 @@ export default function LoginForm() {
       <div className="relative py-2">
 
         <div className="absolute inset-0 flex items-center">
-
           <div className="w-full border-t border-slate-300" />
-
         </div>
 
         <div className="relative flex justify-center">
-
           <span className="bg-white px-4 text-sm text-slate-500">
             or
           </span>
-
         </div>
 
       </div>
 
-      {/* Google Button (UI only) */}
+      {/* Google Login (UI only) */}
 
       <button
         type="button"

@@ -7,7 +7,9 @@ interface PasswordInputProps {
   label: string;
   placeholder?: string;
   value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => void;
   required?: boolean;
   autoComplete?: string;
   error?: string;
@@ -24,7 +26,8 @@ export default function PasswordInput({
   autoComplete = "current-password",
   error,
 }: PasswordInputProps) {
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] =
+    useState(false);
 
   return (
     <div className="space-y-2">
@@ -61,7 +64,7 @@ export default function PasswordInput({
             focus:ring-2
             ${
               error
-                ? "border-red-500 focus:ring-red-300"
+                ? "border-red-500 focus:border-red-500 focus:ring-red-200"
                 : "border-slate-300 focus:border-blue-500 focus:ring-blue-200"
             }
           `}
@@ -69,7 +72,9 @@ export default function PasswordInput({
 
         <button
           type="button"
-          onClick={() => setShowPassword(!showPassword)}
+          onClick={() =>
+            setShowPassword((prev) => !prev)
+          }
           className="
             absolute
             right-4
@@ -79,6 +84,11 @@ export default function PasswordInput({
             transition-colors
             hover:text-blue-600
           "
+          aria-label={
+            showPassword
+              ? "Hide password"
+              : "Show password"
+          }
         >
           {showPassword ? (
             <EyeOff size={20} />

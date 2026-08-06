@@ -1,7 +1,13 @@
+import AuthLayout from "../components/auth/AuthLayout";
+import ResetPasswordForm from "../components/auth/ResetPasswordForm";
+
 export default function ResetPassword() {
   return (
-    <div className="py-20 text-center text-2xl font-bold">
-      Reset Password Page
-    </div>
+    <AuthLayout
+      title="Reset Password"
+      subtitle="Create a new password for your Ultimate Kits account."
+    >
+      <ResetPasswordForm />
+    </AuthLayout>
   );
 }
