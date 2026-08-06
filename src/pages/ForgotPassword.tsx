@@ -1,7 +1,13 @@
+import AuthLayout from "../components/auth/AuthLayout";
+import ForgotPasswordForm from "../components/auth/ForgotPasswordForm";
+
 export default function ForgotPassword() {
   return (
-    <div className="py-20 text-center text-2xl font-bold">
-      Forgot Password Page
-    </div>
+    <AuthLayout
+      title="Forgot Password?"
+      subtitle="Enter your email address and we'll send you a password reset link."
+    >
+      <ForgotPasswordForm />
+    </AuthLayout>
   );
 }

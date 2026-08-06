@@ -4,21 +4,26 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./index.css";
 
+import { AuthProvider } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
 import { WishlistProvider } from "./context/WishlistContext";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
 
-    <WishlistProvider>
+    <AuthProvider>
 
-      <CartProvider>
+      <WishlistProvider>
 
-        <App />
+        <CartProvider>
 
-      </CartProvider>
+          <App />
 
-    </WishlistProvider>
+        </CartProvider>
+
+      </WishlistProvider>
+
+    </AuthProvider>
 
   </React.StrictMode>
 );
