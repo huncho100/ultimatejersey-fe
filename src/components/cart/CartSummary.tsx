@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import Button from "../ui/Button";
 
@@ -9,13 +10,11 @@ interface CartSummaryProps {
 export default function CartSummary({
   subtotal,
 }: CartSummaryProps) {
+  const navigate = useNavigate();
+
   const [promoCode, setPromoCode] = useState("");
 
-  const shipping = subtotal > 0 ? 15 : 0;
-
-  const tax = subtotal * 0.075;
-
-  const total = subtotal + shipping + tax;
+  const total = subtotal;
 
   return (
     <div
@@ -99,31 +98,11 @@ export default function CartSummary({
 
         </div>
 
-        <div className="flex justify-between text-slate-600">
-
-          <span>Shipping</span>
-
-          <span className="font-semibold">
-            ${shipping.toFixed(2)}
-          </span>
-
-        </div>
-
-        <div className="flex justify-between text-slate-600">
-
-          <span>Estimated Tax</span>
-
-          <span className="font-semibold">
-            ${tax.toFixed(2)}
-          </span>
-
-        </div>
-
         <hr className="border-slate-200" />
 
         <div className="flex justify-between text-2xl font-bold text-slate-900">
 
-          <span>Grand Total</span>
+          <span>Total</span>
 
           <span>${total.toFixed(2)}</span>
 
@@ -138,6 +117,7 @@ export default function CartSummary({
         <Button
           fullWidth
           size="lg"
+          onClick={() => navigate("/checkout")}
         >
           Proceed to Checkout
         </Button>

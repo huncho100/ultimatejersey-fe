@@ -12,6 +12,7 @@ import Retro from "./pages/Retro";
 import ProductDetails from "./pages/ProductDetails";
 import Search from "./pages/Search";
 import Cart from "./pages/Cart";
+import Checkout from "./pages/Checkout";
 import Wishlist from "./pages/Wishlist";
 
 // Authentication Pages
@@ -69,6 +70,11 @@ export default function App() {
           <Route
             path="/cart"
             element={<Cart />}
+          />
+
+          <Route
+            path="/checkout"
+            element={<Checkout />}
           />
 
           <Route
