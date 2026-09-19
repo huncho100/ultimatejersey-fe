@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:5000/auth";
+import { apiRequest } from "./api";
 
 /**
  * ===========================================
@@ -69,32 +69,6 @@ interface BackendAuthResponse {
  * ===========================================
  */
 
-async function request<T>(
-  endpoint: string,
-  options?: RequestInit
-): Promise<T> {
-  const response = await fetch(
-    `${API_BASE_URL}${endpoint}`,
-    {
-      headers: {
-        "Content-Type": "application/json",
-        ...(options?.headers || {}),
-      },
-      ...options,
-    }
-  );
-
-  if (!response.ok) {
-    const error = await response.text();
-
-    throw new Error(
-      error || "Something went wrong."
-    );
-  }
-
-  return response.json();
-}
-
 /**
  * ===========================================
  * Authentication Service
@@ -109,8 +83,8 @@ export const authService = {
     data: LoginRequest
   ): Promise<AuthResponse> {
     const response =
-      await request<BackendAuthResponse>(
-        "/login",
+      await apiRequest<BackendAuthResponse>(
+        "/auth/login",
         {
           method: "POST",
           body: JSON.stringify(data),
@@ -137,11 +111,17 @@ export const authService = {
     data: RegisterRequest
   ): Promise<AuthResponse> {
     const response =
-      await request<BackendAuthResponse>(
-        "/register",
+      await apiRequest<BackendAuthResponse>(
+        "/auth/register",
         {
           method: "POST",
-          body: JSON.stringify(data),
+          body: JSON.stringify({
+            first_name: data.firstName,
+            last_name: data.lastName,
+            email: data.email,
+            password: data.password,
+            confirm_password: data.confirmPassword,
+          }),
         }
       );
 
@@ -164,8 +144,8 @@ export const authService = {
   forgotPassword(
     data: ForgotPasswordRequest
   ) {
-    return request<void>(
-      "/forgot-password",
+    return apiRequest<void>(
+      "/auth/forgot-password",
       {
         method: "POST",
         body: JSON.stringify(data),
@@ -179,11 +159,15 @@ export const authService = {
   resetPassword(
     data: ResetPasswordRequest
   ) {
-    return request<void>(
-      "/reset-password",
+    return apiRequest<void>(
+      "/auth/reset-password",
       {
         method: "POST",
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          token: data.token,
+          password: data.password,
+          confirm_password: data.confirmPassword,
+        }),
       }
     );
   },

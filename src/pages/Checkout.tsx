@@ -9,6 +9,8 @@ import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 
 import { orderService } from "../services/orderService";
+import { cartService } from "../services/cartService";
+import { paymentService } from "../services/paymentService";
 
 export default function Checkout() {
   const navigate = useNavigate();
@@ -17,6 +19,7 @@ export default function Checkout() {
     cartItems,
     totalItems,
     totalPrice,
+    clearCart,
   } = useCart();
 
   const {
@@ -127,18 +130,23 @@ export default function Checkout() {
     setError("");
 
     try {
+      await cartService.syncCart(
+        cartItems.map((item) => ({
+          product_id: item.id,
+          quantity: item.quantity,
+        }))
+      );
+
       const order =
         await orderService.createOrder();
 
-      /**
-       * Payment integration will be connected
-       * here in the next step.
-       *
-       * For now, navigate to the order page
-       * using the newly created order ID.
-       */
+      const payment =
+        await paymentService.initialize(order.id);
 
-      navigate(`/orders/${order.id}`);
+      clearCart();
+      window.location.assign(
+        payment.authorization_url
+      );
 
     } catch (err) {
       const message =

@@ -17,6 +17,7 @@ import Logo from "../ui/Logo";
 
 import { useCart } from "../../context/CartContext";
 import { useWishlist } from "../../context/WishlistContext";
+import { useAuth } from "../../context/AuthContext";
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -25,10 +26,16 @@ export default function Navbar() {
 
   const { totalWishlistItems } = useWishlist();
 
+  const { isAuthenticated } = useAuth();
+
   const cartCount = cartItems.reduce(
     (total, item) => total + item.quantity,
     0
   );
+
+  const accountPath = isAuthenticated
+    ? "/account"
+    : "/login";
 
   return (
     <header className="sticky top-0 z-50 border-b border-slate-800 bg-slate-900/95 text-white shadow-lg backdrop-blur-md">
@@ -53,7 +60,9 @@ export default function Navbar() {
                   to={item.path}
                   className={({ isActive }) =>
                     `font-medium transition-colors duration-300 hover:text-blue-400 ${
-                      isActive ? "text-blue-400" : "text-slate-200"
+                      isActive
+                        ? "text-blue-400"
+                        : "text-slate-200"
                     }`
                   }
                 >
@@ -69,6 +78,8 @@ export default function Navbar() {
           {/* Desktop Icons */}
 
           <div className="hidden items-center gap-4 lg:flex">
+
+            {/* Search */}
 
             <NavLink
               to="/search"
@@ -150,19 +161,33 @@ export default function Navbar() {
 
             </NavLink>
 
-            <button
+            {/* User Account */}
+
+            <NavLink
+              to={accountPath}
               className="rounded-full p-2 transition-all duration-300 hover:bg-slate-800 hover:text-blue-400"
-              aria-label="User Account"
+              aria-label={
+                isAuthenticated
+                  ? "My Account"
+                  : "Sign In"
+              }
+              title={
+                isAuthenticated
+                  ? "My Account"
+                  : "Sign In"
+              }
             >
               <User size={20} />
-            </button>
+            </NavLink>
 
           </div>
 
           {/* Mobile Menu Button */}
 
           <button
-            onClick={() => setMobileOpen(!mobileOpen)}
+            onClick={() =>
+              setMobileOpen(!mobileOpen)
+            }
             className="rounded-lg p-2 transition-colors duration-300 hover:bg-slate-800 lg:hidden"
             aria-label="Toggle menu"
           >
@@ -189,10 +214,14 @@ export default function Navbar() {
 
                   <NavLink
                     to={item.path}
-                    onClick={() => setMobileOpen(false)}
+                    onClick={() =>
+                      setMobileOpen(false)
+                    }
                     className={({ isActive }) =>
                       `block text-lg transition-colors duration-300 hover:text-blue-400 ${
-                        isActive ? "text-blue-400" : "text-slate-200"
+                        isActive
+                          ? "text-blue-400"
+                          : "text-slate-200"
                       }`
                     }
                   >
@@ -209,10 +238,15 @@ export default function Navbar() {
 
             <div className="mt-8 flex gap-4">
 
+              {/* Search */}
+
               <NavLink
                 to="/search"
-                onClick={() => setMobileOpen(false)}
+                onClick={() =>
+                  setMobileOpen(false)
+                }
                 className="rounded-full bg-slate-800 p-3 transition-all duration-300 hover:bg-blue-600"
+                aria-label="Search"
               >
                 <Search size={20} />
               </NavLink>
@@ -221,8 +255,11 @@ export default function Navbar() {
 
               <NavLink
                 to="/wishlist"
-                onClick={() => setMobileOpen(false)}
+                onClick={() =>
+                  setMobileOpen(false)
+                }
                 className="relative rounded-full bg-slate-800 p-3 transition-all duration-300 hover:bg-blue-600"
+                aria-label="Wishlist"
               >
 
                 <Heart size={20} />
@@ -257,8 +294,11 @@ export default function Navbar() {
 
               <NavLink
                 to="/cart"
-                onClick={() => setMobileOpen(false)}
+                onClick={() =>
+                  setMobileOpen(false)
+                }
                 className="relative rounded-full bg-slate-800 p-3 transition-all duration-300 hover:bg-blue-600"
+                aria-label="Shopping Cart"
               >
 
                 <ShoppingCart size={20} />
@@ -289,9 +329,22 @@ export default function Navbar() {
 
               </NavLink>
 
-              <button className="rounded-full bg-slate-800 p-3 transition-all duration-300 hover:bg-blue-600">
+              {/* User Account */}
+
+              <NavLink
+                to={accountPath}
+                onClick={() =>
+                  setMobileOpen(false)
+                }
+                className="rounded-full bg-slate-800 p-3 transition-all duration-300 hover:bg-blue-600"
+                aria-label={
+                  isAuthenticated
+                    ? "My Account"
+                    : "Sign In"
+                }
+              >
                 <User size={20} />
-              </button>
+              </NavLink>
 
             </div>
 
