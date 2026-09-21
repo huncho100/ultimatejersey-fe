@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:5000/api/auth";
+import { apiRequest } from "./api";
 
 /**
  * ===========================================
@@ -45,32 +45,29 @@ export interface AuthResponse {
 
 /**
  * ===========================================
- * Generic Request Helper
+ * Backend Authentication Response
  * ===========================================
  */
 
-async function request<T>(
-  endpoint: string,
-  options?: RequestInit
-): Promise<T> {
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-    headers: {
-      "Content-Type": "application/json",
-      ...(options?.headers || {}),
-    },
-    ...options,
-  });
+interface BackendAuthResponse {
+  access_token: string;
+  token_type: string;
 
-  if (!response.ok) {
-    const error = await response.text();
-
-    throw new Error(
-      error || "Something went wrong."
-    );
-  }
-
-  return response.json();
+  user: {
+    id: number;
+    first_name: string;
+    last_name: string;
+    email: string;
+    role: string;
+    is_active: boolean;
+  };
 }
+
+/**
+ * ===========================================
+ * Generic Request Helper
+ * ===========================================
+ */
 
 /**
  * ===========================================
@@ -82,41 +79,97 @@ export const authService = {
   /**
    * Login
    */
-  login(data: LoginRequest) {
-    return request<AuthResponse>("/login", {
-      method: "POST",
-      body: JSON.stringify(data),
-    });
+  async login(
+    data: LoginRequest
+  ): Promise<AuthResponse> {
+    const response =
+      await apiRequest<BackendAuthResponse>(
+        "/auth/login",
+        {
+          method: "POST",
+          body: JSON.stringify(data),
+        }
+      );
+
+    return {
+      token: response.access_token,
+
+      user: {
+        id: response.user.id,
+        firstName: response.user.first_name,
+        lastName: response.user.last_name,
+        email: response.user.email,
+        role: response.user.role,
+      },
+    };
   },
 
   /**
    * Register
    */
-  register(data: RegisterRequest) {
-    return request<AuthResponse>("/register", {
-      method: "POST",
-      body: JSON.stringify(data),
-    });
+  async register(
+    data: RegisterRequest
+  ): Promise<AuthResponse> {
+    const response =
+      await apiRequest<BackendAuthResponse>(
+        "/auth/register",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            first_name: data.firstName,
+            last_name: data.lastName,
+            email: data.email,
+            password: data.password,
+            confirm_password: data.confirmPassword,
+          }),
+        }
+      );
+
+    return {
+      token: response.access_token,
+
+      user: {
+        id: response.user.id,
+        firstName: response.user.first_name,
+        lastName: response.user.last_name,
+        email: response.user.email,
+        role: response.user.role,
+      },
+    };
   },
 
   /**
    * Forgot Password
    */
-  forgotPassword(data: ForgotPasswordRequest) {
-    return request<void>("/forgot-password", {
-      method: "POST",
-      body: JSON.stringify(data),
-    });
+  forgotPassword(
+    data: ForgotPasswordRequest
+  ) {
+    return apiRequest<void>(
+      "/auth/forgot-password",
+      {
+        method: "POST",
+        body: JSON.stringify(data),
+      }
+    );
   },
 
   /**
    * Reset Password
    */
-  resetPassword(data: ResetPasswordRequest) {
-    return request<void>("/reset-password", {
-      method: "POST",
-      body: JSON.stringify(data),
-    });
+  resetPassword(
+    data: ResetPasswordRequest
+  ) {
+    return apiRequest<void>(
+      "/auth/reset-password",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          token: data.token,
+          password: data.password,
+          confirm_password: data.confirmPassword,
+        }),
+      }
+    );
   },
 
   /**
@@ -131,8 +184,13 @@ export const authService = {
   /**
    * Save Session
    */
-  saveSession(auth: AuthResponse) {
-    localStorage.setItem("token", auth.token);
+  saveSession(
+    auth: AuthResponse
+  ) {
+    localStorage.setItem(
+      "token",
+      auth.token
+    );
 
     if (auth.refreshToken) {
       localStorage.setItem(
@@ -158,9 +216,12 @@ export const authService = {
    * Get Current User
    */
   getCurrentUser() {
-    const user = localStorage.getItem("user");
+    const user =
+      localStorage.getItem("user");
 
-    if (!user) return null;
+    if (!user) {
+      return null;
+    }
 
     return JSON.parse(user);
   },
@@ -169,6 +230,8 @@ export const authService = {
    * Check Login Status
    */
   isAuthenticated() {
-    return !!localStorage.getItem("token");
+    return !!localStorage.getItem(
+      "token"
+    );
   },
 };

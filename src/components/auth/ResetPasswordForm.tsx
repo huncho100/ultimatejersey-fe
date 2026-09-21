@@ -139,8 +139,8 @@ export default function ResetPasswordForm() {
         label="New Password"
         placeholder="Enter your new password"
         value={form.password}
-        onChange={(value) =>
-          updateField("password", value)
+        onChange={(event) =>
+          updateField("password", event.target.value)
         }
         required
         autoComplete="new-password"
@@ -152,10 +152,10 @@ export default function ResetPasswordForm() {
         label="Confirm Password"
         placeholder="Confirm your new password"
         value={form.confirmPassword}
-        onChange={(value) =>
+        onChange={(event) =>
           updateField(
             "confirmPassword",
-            value
+            event.target.value
           )
         }
         required

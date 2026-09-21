@@ -13,6 +13,7 @@ interface PasswordInputProps {
   required?: boolean;
   autoComplete?: string;
   error?: string;
+  disabled?: boolean;
 }
 
 export default function PasswordInput({
@@ -25,6 +26,7 @@ export default function PasswordInput({
   required = false,
   autoComplete = "current-password",
   error,
+  disabled = false,
 }: PasswordInputProps) {
   const [showPassword, setShowPassword] =
     useState(false);
@@ -48,6 +50,7 @@ export default function PasswordInput({
           value={value}
           onChange={onChange}
           required={required}
+          disabled={disabled}
           autoComplete={autoComplete}
           placeholder={placeholder}
           className={`
@@ -62,6 +65,8 @@ export default function PasswordInput({
             duration-200
             focus:outline-none
             focus:ring-2
+            disabled:cursor-not-allowed
+            disabled:bg-slate-100
             ${
               error
                 ? "border-red-500 focus:border-red-500 focus:ring-red-200"
@@ -75,6 +80,7 @@ export default function PasswordInput({
           onClick={() =>
             setShowPassword((prev) => !prev)
           }
+          disabled={disabled}
           className="
             absolute
             right-4

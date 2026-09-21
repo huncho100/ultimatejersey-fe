@@ -12,13 +12,16 @@ import Retro from "./pages/Retro";
 import ProductDetails from "./pages/ProductDetails";
 import Search from "./pages/Search";
 import Cart from "./pages/Cart";
+import Checkout from "./pages/Checkout";
 import Wishlist from "./pages/Wishlist";
+import Account from "./pages/Account";
 
 // Authentication Pages
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import PaymentCallback from "./pages/PaymentCallback";
 
 export default function App() {
   return (
@@ -72,8 +75,23 @@ export default function App() {
           />
 
           <Route
+            path="/checkout"
+            element={<Checkout />}
+          />
+
+          <Route
             path="/wishlist"
             element={<Wishlist />}
+          />
+
+          <Route
+            path="/account"
+            element={<Account />}
+          />
+
+          <Route
+            path="/payment/callback"
+            element={<PaymentCallback />}
           />
 
         </Route>
