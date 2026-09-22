@@ -6,6 +6,26 @@ interface ApiError {
   detail?: string;
 }
 
+/**
+ * An unsuccessful HTTP response.
+ *
+ * Extends Error, and carries the same message the
+ * plain Error used to, so existing callers that
+ * only read .message keep working. Callers that
+ * need to tell "not found" from "server is down"
+ * can read .status.
+ */
+export class ApiRequestError extends Error {
+  readonly status: number;
+
+  constructor(message: string, status: number) {
+    super(message);
+
+    this.name = "ApiRequestError";
+    this.status = status;
+  }
+}
+
 export async function apiRequest<T>(
   endpoint: string,
   options?: RequestInit
@@ -32,7 +52,10 @@ export async function apiRequest<T>(
       message = responseBody || message;
     }
 
-    throw new Error(message);
+    throw new ApiRequestError(
+      message,
+      response.status
+    );
   }
 
   if (response.status === 204) {

@@ -12,6 +12,11 @@ import { orderService } from "../services/orderService";
 import { cartService } from "../services/cartService";
 import { paymentService } from "../services/paymentService";
 
+import {
+  handleImageError,
+  productImage,
+} from "../utils/catalog";
+
 export default function Checkout() {
   const navigate = useNavigate();
 
@@ -199,8 +204,9 @@ export default function Checkout() {
                   <div className="flex min-w-0 items-center gap-4">
 
                     <img
-                      src={item.image}
+                      src={productImage(item)}
                       alt={item.name}
+                      onError={handleImageError}
                       className="
                         h-20
                         w-20

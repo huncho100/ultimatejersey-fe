@@ -5,6 +5,12 @@ import {
 
 import type { Product } from "../../types/product";
 
+import {
+  handleImageError,
+  productHeading,
+  productImage,
+} from "../../utils/catalog";
+
 interface WishlistItemProps {
   item: Product;
 
@@ -26,8 +32,9 @@ export default function WishlistItem({
       <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-xl bg-slate-100 p-2">
 
         <img
-          src={item.image}
-          alt={item.team}
+          src={productImage(item)}
+          alt={productHeading(item)}
+          onError={handleImageError}
           className="max-h-full object-contain"
         />
 
@@ -46,7 +53,7 @@ export default function WishlistItem({
           </p>
 
           <h2 className="mt-1 text-xl font-bold text-slate-900">
-            {item.team}
+            {productHeading(item)}
           </h2>
 
           <p className="text-slate-500">

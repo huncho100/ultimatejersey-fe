@@ -6,6 +6,12 @@ import {
 
 import type { CartItem as CartItemType } from "../../context/CartContext";
 
+import {
+  handleImageError,
+  productHeading,
+  productImage,
+} from "../../utils/catalog";
+
 interface CartItemProps {
   item: CartItemType;
 
@@ -55,8 +61,9 @@ export default function CartItem({
         "
       >
         <img
-          src={item.image}
-          alt={item.team}
+          src={productImage(item)}
+          alt={productHeading(item)}
+          onError={handleImageError}
           className="max-h-full max-w-full object-contain"
         />
       </div>
@@ -72,7 +79,7 @@ export default function CartItem({
           </p>
 
           <h3 className="mt-1 text-2xl font-bold text-slate-900">
-            {item.team}
+            {productHeading(item)}
           </h3>
 
           <p className="text-slate-500">

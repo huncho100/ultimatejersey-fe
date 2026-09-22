@@ -5,10 +5,19 @@ import { Search as SearchIcon, X } from "lucide-react";
 import Container from "../components/ui/Container";
 import SectionTitle from "../components/ui/SectionTitle";
 import ProductCard from "../components/products/ProductCard";
+import CatalogState from "../components/catalog/CatalogState";
 
-import { footballProducts } from "../data/football";
+import { useProducts } from "../context/ProductsContext";
+
+import {
+  handleImageError,
+  productHeading,
+  productImage,
+} from "../utils/catalog";
 
 export default function Search() {
+  const { products, loading, error, reload } = useProducts();
+
   const [query, setQuery] = useState("");
 
   const results = useMemo(() => {
@@ -16,9 +25,9 @@ export default function Search() {
 
     if (!search) return [];
 
-    return footballProducts.filter((product) => {
+    return products.filter((product) => {
       return (
-        product.team.toLowerCase().includes(search) ||
+        product.team?.toLowerCase().includes(search) ||
         product.name.toLowerCase().includes(search) ||
         product.sport.toLowerCase().includes(search) ||
         product.category.toLowerCase().includes(search) ||
@@ -26,7 +35,7 @@ export default function Search() {
         product.league?.toLowerCase().includes(search)
       );
     });
-  }, [query]);
+  }, [products, query]);
 
   const suggestions = results.slice(0, 5);
 
@@ -126,14 +135,15 @@ export default function Search() {
                   "
                 >
                   <img
-                    src={product.image}
-                    alt={product.team}
+                    src={productImage(product)}
+                    alt={productHeading(product)}
+                    onError={handleImageError}
                     className="h-12 w-12 rounded-lg object-contain"
                   />
 
                   <div>
                     <p className="font-semibold">
-                      {product.team}
+                      {productHeading(product)}
                     </p>
 
                     <p className="text-sm text-slate-500">
@@ -149,7 +159,15 @@ export default function Search() {
 
         {/* States */}
 
-        {!query ? (
+        {loading || error ? (
+          <div className="mt-10">
+            <CatalogState
+              loading={loading}
+              error={error}
+              onRetry={reload}
+            />
+          </div>
+        ) : !query ? (
           <div className="mt-20 text-center">
 
             <h3 className="text-2xl font-bold text-slate-700">

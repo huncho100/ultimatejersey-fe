@@ -10,11 +10,14 @@ import Container from "../components/ui/Container";
 import SectionTitle from "../components/ui/SectionTitle";
 import ProductCard from "../components/products/ProductCard";
 import ProductFilters from "../components/products/ProductFilters";
+import CatalogState from "../components/catalog/CatalogState";
 
-import { catalogProducts } from "../data/catalog";
+import { useProducts } from "../context/ProductsContext";
 
 export default function Products() {
   const [searchParams] = useSearchParams();
+
+  const { products, loading, error, reload } = useProducts();
 
   const isNewFilter =
     searchParams.get("filter") === "new";
@@ -73,7 +76,7 @@ export default function Products() {
 
   // Filter + Sort Products
   const filteredProducts = useMemo(() => {
-    const filtered = catalogProducts.filter((product) => {
+    const filtered = products.filter((product) => {
       const categoryMatch =
         selectedCategories.length === 0 ||
         selectedCategories.includes(product.category);
@@ -115,6 +118,7 @@ export default function Products() {
         return filtered;
     }
   }, [
+    products,
     selectedCategories,
     selectedLeagues,
     selectedBrands,
@@ -223,26 +227,44 @@ export default function Products() {
               ${filtersOpen ? "flex-1" : "w-full"}
             `}
           >
-            <div
-              className={`
-                grid
-                grid-cols-1
-                gap-8
-                sm:grid-cols-2
-                ${
-                  filtersOpen
-                    ? "xl:grid-cols-3"
-                    : "xl:grid-cols-4"
-                }
-              `}
-            >
-              {filteredProducts.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                />
-              ))}
-            </div>
+            {loading || error ? (
+              <CatalogState
+                loading={loading}
+                error={error}
+                onRetry={reload}
+              />
+            ) : filteredProducts.length === 0 ? (
+              <div className="rounded-2xl border border-dashed border-slate-300 bg-white py-20 text-center">
+                <h3 className="text-2xl font-bold text-slate-700">
+                  No jerseys found
+                </h3>
+
+                <p className="mt-3 text-slate-500">
+                  Try widening or clearing your filters.
+                </p>
+              </div>
+            ) : (
+              <div
+                className={`
+                  grid
+                  grid-cols-1
+                  gap-8
+                  sm:grid-cols-2
+                  ${
+                    filtersOpen
+                      ? "xl:grid-cols-3"
+                      : "xl:grid-cols-4"
+                  }
+                `}
+              >
+                {filteredProducts.map((product) => (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </Container>

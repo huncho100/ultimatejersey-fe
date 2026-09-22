@@ -1,6 +1,8 @@
 interface ProductPriceProps {
   price: number;
-  oldPrice?: number;
+
+  // Nullable on the API, not merely absent.
+  oldPrice?: number | null;
 }
 
 export default function ProductPrice({
@@ -8,7 +10,9 @@ export default function ProductPrice({
   oldPrice,
 }: ProductPriceProps) {
   const hasDiscount =
-    oldPrice !== undefined && oldPrice > price;
+    oldPrice !== undefined &&
+    oldPrice !== null &&
+    oldPrice > price;
 
   const discount = hasDiscount
     ? Math.round(((oldPrice - price) / oldPrice) * 100)

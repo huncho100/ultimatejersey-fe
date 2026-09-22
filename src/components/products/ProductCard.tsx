@@ -8,6 +8,12 @@ import { useWishlist } from "../../context/WishlistContext";
 
 import type { Product } from "../../types/product";
 
+import {
+  handleImageError,
+  productHeading,
+  productImage,
+} from "../../utils/catalog";
+
 interface ProductCardProps {
   product: Product;
 }
@@ -88,8 +94,9 @@ export default function ProductCard({
 
         <div className="flex h-72 items-center justify-center overflow-hidden bg-slate-100 p-6">
           <img
-            src={product.image}
-            alt={`${product.team} ${product.name}`}
+            src={productImage(product)}
+            alt={`${productHeading(product)} ${product.name}`}
+            onError={handleImageError}
             className="max-h-full max-w-full object-contain transition-transform duration-500 group-hover:scale-110"
           />
         </div>
@@ -105,7 +112,7 @@ export default function ProductCard({
             </p>
 
             <h3 className="mt-1 text-xl font-bold text-slate-900">
-              {product.team}
+              {productHeading(product)}
             </h3>
 
             <p className="text-slate-500">

@@ -1,7 +1,5 @@
 import { useMemo, useState } from "react";
 
-import { nationalTeamProducts } from "../data/nationalTeams";
-
 import type { ClubFiltersState } from "../types/filter";
 
 import Container from "../components/ui/Container";
@@ -12,6 +10,10 @@ import ClubFilters from "../components/clubs/ClubFilters";
 import ClubGrid from "../components/clubs/ClubGrid";
 
 import CatalogToolbar from "../components/catalog/CatalogToolbar";
+import CatalogState from "../components/catalog/CatalogState";
+
+import { useProducts } from "../context/ProductsContext";
+import { isNationalTeamJersey } from "../utils/catalog";
 
 const defaultFilters: ClubFiltersState = {
   leagues: [],
@@ -20,6 +22,8 @@ const defaultFilters: ClubFiltersState = {
 };
 
 export default function NationalTeams() {
+  const { products, loading, error, reload } = useProducts();
+
   const [search, setSearch] = useState("");
 
   const [filters, setFilters] =
@@ -28,13 +32,18 @@ export default function NationalTeams() {
   const [sortBy, setSortBy] =
     useState("featured");
 
+  const nationalTeamProducts = useMemo(
+    () => products.filter(isNationalTeamJersey),
+    [products]
+  );
+
   const filteredProducts = useMemo(() => {
     const query = search.toLowerCase().trim();
 
     const results = nationalTeamProducts.filter((product) => {
       const matchesSearch =
         !query ||
-        product.team.toLowerCase().includes(query) ||
+        product.team?.toLowerCase().includes(query) ||
         product.name.toLowerCase().includes(query) ||
         product.brand?.toLowerCase().includes(query) ||
         product.category.toLowerCase().includes(query);
@@ -89,7 +98,7 @@ export default function NationalTeams() {
     }
 
     return results;
-  }, [search, filters, sortBy]);
+  }, [nationalTeamProducts, search, filters, sortBy]);
 
   return (
     <section className="min-h-screen bg-slate-50 py-16">
@@ -118,16 +127,26 @@ export default function NationalTeams() {
 
           <div>
 
-            <CatalogToolbar
-              total={nationalTeamProducts.length}
-              showing={filteredProducts.length}
-              sortBy={sortBy}
-              onSortChange={setSortBy}
-            />
+            {loading || error ? (
+              <CatalogState
+                loading={loading}
+                error={error}
+                onRetry={reload}
+              />
+            ) : (
+              <>
+                <CatalogToolbar
+                  total={nationalTeamProducts.length}
+                  showing={filteredProducts.length}
+                  sortBy={sortBy}
+                  onSortChange={setSortBy}
+                />
 
-            <ClubGrid
-              products={filteredProducts}
-            />
+                <ClubGrid
+                  products={filteredProducts}
+                />
+              </>
+            )}
 
           </div>
 

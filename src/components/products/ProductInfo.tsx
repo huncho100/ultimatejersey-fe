@@ -16,6 +16,8 @@ import { useCart } from "../../context/CartContext";
 
 import type { Product } from "../../types/product";
 
+import { productHeading } from "../../utils/catalog";
+
 interface ProductInfoProps {
   product: Product;
 }
@@ -52,7 +54,7 @@ export default function ProductInfo({
         <span>/</span>
 
         <span className="font-medium text-slate-700">
-          {product.team}
+          {productHeading(product)}
         </span>
 
       </nav>
@@ -62,7 +64,7 @@ export default function ProductInfo({
       <div>
 
         <h1 className="text-4xl font-extrabold leading-tight text-slate-900">
-          {product.team}{" "}
+          {productHeading(product)}{" "}
           <span className="font-semibold text-slate-600">
             {product.name}
           </span>

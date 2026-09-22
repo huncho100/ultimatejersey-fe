@@ -1,9 +1,17 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
-import { catalogProducts } from "../../data/catalog";
+import { useProducts } from "../../context/ProductsContext";
+
+import {
+  handleImageError,
+  productHeading,
+  productImage,
+} from "../../utils/catalog";
 
 export default function HeroJerseys() {
+  const { products } = useProducts();
+
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
   const [rotationSeed, setRotationSeed] = useState(0);
@@ -23,10 +31,10 @@ export default function HeroJerseys() {
   }, []);
 
   const jerseys = useMemo(() => {
-    return [...catalogProducts]
+    return [...products]
       .sort(() => Math.random() - 0.5)
       .slice(0, 3);
-  }, [rotationSeed]);
+  }, [products, rotationSeed]);
 
   function handleMouseMove(
     e: React.MouseEvent<HTMLDivElement>
@@ -67,8 +75,9 @@ export default function HeroJerseys() {
         className="absolute left-4 top-24 z-10"
       >
         <img
-          src={jerseys[0].image}
-          alt={jerseys[0].team}
+          src={productImage(jerseys[0])}
+          alt={productHeading(jerseys[0])}
+          onError={handleImageError}
           style={{
             transform: `
               translate(${position.x * -1.2}px, ${position.y * -1.2}px)
@@ -102,8 +111,9 @@ export default function HeroJerseys() {
         className="absolute z-30"
       >
         <img
-          src={jerseys[1].image}
-          alt={jerseys[1].team}
+          src={productImage(jerseys[1])}
+          alt={productHeading(jerseys[1])}
+          onError={handleImageError}
           style={{
             transform: `
               translate(${position.x * .6}px, ${position.y * .6}px)
@@ -136,8 +146,9 @@ export default function HeroJerseys() {
         className="absolute right-4 top-24 z-20"
       >
         <img
-          src={jerseys[2].image}
-          alt={jerseys[2].team}
+          src={productImage(jerseys[2])}
+          alt={productHeading(jerseys[2])}
+          onError={handleImageError}
           style={{
             transform: `
               translate(${position.x * 1.2}px, ${position.y * 1.2}px)

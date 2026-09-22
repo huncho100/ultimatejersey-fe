@@ -1,7 +1,5 @@
 import { useMemo, useState } from "react";
 
-import { footballProducts } from "../data/football";
-
 import type { ClubFiltersState } from "../types/filter";
 
 import Container from "../components/ui/Container";
@@ -12,6 +10,10 @@ import ClubFilters from "../components/clubs/ClubFilters";
 import ClubGrid from "../components/clubs/ClubGrid";
 
 import CatalogToolbar from "../components/catalog/CatalogToolbar";
+import CatalogState from "../components/catalog/CatalogState";
+
+import { useProducts } from "../context/ProductsContext";
+import { isClubJersey } from "../utils/catalog";
 
 const defaultFilters: ClubFiltersState = {
   leagues: [],
@@ -20,6 +22,8 @@ const defaultFilters: ClubFiltersState = {
 };
 
 export default function Clubs() {
+  const { products, loading, error, reload } = useProducts();
+
   const [search, setSearch] = useState("");
 
   const [filters, setFilters] =
@@ -28,13 +32,18 @@ export default function Clubs() {
   const [sortBy, setSortBy] =
     useState("featured");
 
+  const clubProducts = useMemo(
+    () => products.filter(isClubJersey),
+    [products]
+  );
+
   const filteredProducts = useMemo(() => {
     const query = search.toLowerCase().trim();
 
-    const results = footballProducts.filter((product) => {
+    const results = clubProducts.filter((product) => {
       const matchesSearch =
         !query ||
-        product.team.toLowerCase().includes(query) ||
+        product.team?.toLowerCase().includes(query) ||
         product.name.toLowerCase().includes(query) ||
         product.brand?.toLowerCase().includes(query) ||
         product.league?.toLowerCase().includes(query) ||
@@ -90,7 +99,7 @@ export default function Clubs() {
     }
 
     return results;
-  }, [search, filters, sortBy]);
+  }, [clubProducts, search, filters, sortBy]);
 
   return (
     <section className="min-h-screen bg-slate-50 py-16">
@@ -112,23 +121,33 @@ export default function Clubs() {
         <div className="mt-10 grid gap-10 lg:grid-cols-[280px_1fr]">
 
           <ClubFilters
-            products={footballProducts}
+            products={clubProducts}
             filters={filters}
             onChange={setFilters}
           />
 
           <div>
 
-            <CatalogToolbar
-              total={footballProducts.length}
-              showing={filteredProducts.length}
-              sortBy={sortBy}
-              onSortChange={setSortBy}
-            />
+            {loading || error ? (
+              <CatalogState
+                loading={loading}
+                error={error}
+                onRetry={reload}
+              />
+            ) : (
+              <>
+                <CatalogToolbar
+                  total={clubProducts.length}
+                  showing={filteredProducts.length}
+                  sortBy={sortBy}
+                  onSortChange={setSortBy}
+                />
 
-            <ClubGrid
-              products={filteredProducts}
-            />
+                <ClubGrid
+                  products={filteredProducts}
+                />
+              </>
+            )}
 
           </div>
 

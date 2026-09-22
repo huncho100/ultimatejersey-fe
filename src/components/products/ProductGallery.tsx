@@ -1,7 +1,15 @@
 import { useEffect, useState } from "react";
 
+import {
+  handleImageError,
+  PLACEHOLDER_IMAGE,
+} from "../../utils/catalog";
+
 interface ProductGalleryProps {
-  image: string;
+  // Nullable on the API, so the placeholder stands
+  // in when a product has no image.
+  image?: string | null;
+
   gallery?: string[];
   name: string;
 }
@@ -11,7 +19,10 @@ export default function ProductGallery({
   gallery = [],
   name,
 }: ProductGalleryProps) {
-  const images = gallery.length > 0 ? gallery : [image];
+  const images =
+    gallery.length > 0
+      ? gallery
+      : [image || PLACEHOLDER_IMAGE];
 
   const [selectedImage, setSelectedImage] = useState(images[0]);
 
@@ -38,6 +49,7 @@ export default function ProductGallery({
         <img
           src={selectedImage}
           alt={name}
+          onError={handleImageError}
           className="
             mx-auto
             h-[450px]
@@ -80,6 +92,7 @@ export default function ProductGallery({
               <img
                 src={img}
                 alt={`${name} ${index + 1}`}
+                onError={handleImageError}
                 className="h-20 w-20 object-contain"
               />
             </button>

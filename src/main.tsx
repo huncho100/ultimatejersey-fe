@@ -7,21 +7,26 @@ import "./index.css";
 import { AuthProvider } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
 import { WishlistProvider } from "./context/WishlistContext";
+import { ProductsProvider } from "./context/ProductsContext";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
 
     <AuthProvider>
 
-      <WishlistProvider>
+      <ProductsProvider>
 
-        <CartProvider>
+        <WishlistProvider>
 
-          <App />
+          <CartProvider>
 
-        </CartProvider>
+            <App />
 
-      </WishlistProvider>
+          </CartProvider>
+
+        </WishlistProvider>
+
+      </ProductsProvider>
 
     </AuthProvider>
 
