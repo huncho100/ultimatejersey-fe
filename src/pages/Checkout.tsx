@@ -1,5 +1,10 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import { Link } from "react-router-dom";
 
 import Container from "../components/ui/Container";
 import SectionTitle from "../components/ui/SectionTitle";
@@ -9,7 +14,10 @@ import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 
 import { orderService } from "../services/orderService";
-import { cartService } from "../services/cartService";
+import {
+  cartService,
+  type ApiCart,
+} from "../services/cartService";
 import { paymentService } from "../services/paymentService";
 
 import {
@@ -17,22 +25,209 @@ import {
   productImage,
 } from "../utils/catalog";
 
+import {
+  formatNaira,
+  parseDecimal,
+} from "../utils/currency";
+
+import type { CartItem } from "../types/cart";
+
+/**
+ * One line of the order summary.
+ *
+ * confirmed marks where the figures came from: the
+ * backend's own pricing, or the browser's copy of it
+ * while the backend has not answered yet.
+ */
+interface SummaryLine {
+  productId: number;
+  product?: CartItem;
+  quantity: number;
+  unitPrice: number;
+  subtotal: number;
+}
+
 export default function Checkout() {
-  const navigate = useNavigate();
+  const { cartItems, hydrated } = useCart();
 
-  const {
-    cartItems,
-    totalItems,
-    totalPrice,
-    clearCart,
-  } = useCart();
-
-  const {
-    isAuthenticated,
-  } = useAuth();
+  const { isAuthenticated } = useAuth();
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  /**
+   * The backend's view of this cart: quantities it
+   * has accepted, priced from the products table.
+   * This is what the summary shows, because it is
+   * what the order will be built from.
+   */
+  const [serverCart, setServerCart] =
+    useState<ApiCart | null>(null);
+
+  const canCheckout =
+    hydrated &&
+    isAuthenticated &&
+    cartItems.length > 0;
+
+  /**
+   * ------------------------------------------
+   * Confirm The Cart With The Backend
+   * ------------------------------------------
+   *
+   * A replace, so the backend ends up holding
+   * exactly what is on screen, and repeating it
+   * changes nothing. Running it here means stock and
+   * pricing problems surface on the summary rather
+   * than after the customer has committed to paying.
+   */
+
+  const confirmCart =
+    useCallback(async (): Promise<ApiCart> => {
+      const cart = await cartService.syncCart(
+        cartItems.map((item) => ({
+          product_id: item.id,
+          quantity: item.quantity,
+        }))
+      );
+
+      setServerCart(cart);
+
+      return cart;
+    }, [cartItems]);
+
+  useEffect(() => {
+    if (!canCheckout) return;
+
+    let cancelled = false;
+
+    confirmCart().catch((caught) => {
+      if (cancelled) return;
+
+      setError(
+        caught instanceof Error
+          ? caught.message
+          : "Unable to confirm your cart."
+      );
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [canCheckout, confirmCart]);
+
+  /**
+   * ------------------------------------------
+   * Summary
+   * ------------------------------------------
+   */
+
+  const summary = useMemo(() => {
+    const products = new Map(
+      cartItems.map((item) => [item.id, item])
+    );
+
+    const lines: SummaryLine[] = serverCart
+      ? serverCart.items.map((line) => ({
+          productId: line.product_id,
+          product: products.get(line.product_id),
+          quantity: line.quantity,
+          unitPrice: parseDecimal(line.unit_price),
+          subtotal: parseDecimal(line.subtotal),
+        }))
+      : cartItems.map((item) => ({
+          productId: item.id,
+          product: item,
+          quantity: item.quantity,
+          unitPrice: item.price,
+          subtotal: item.price * item.quantity,
+        }));
+
+    return {
+      confirmed: serverCart !== null,
+      lines,
+      totalItems: lines.reduce(
+        (sum, line) => sum + line.quantity,
+        0
+      ),
+      total: lines.reduce(
+        (sum, line) => sum + line.subtotal,
+        0
+      ),
+    };
+  }, [serverCart, cartItems]);
+
+  /**
+   * ------------------------------------------
+   * Place Order
+   * ------------------------------------------
+   */
+
+  async function handlePlaceOrder() {
+    if (loading) {
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+
+    try {
+      await confirmCart();
+
+      // The backend prices the order from the
+      // products table and Paystack is initialised
+      // from the order it created. Nothing the
+      // browser worked out is sent as the amount.
+      const order =
+        await orderService.createOrder();
+
+      const payment =
+        await paymentService.initialize(order.id);
+
+      // The cart is deliberately left alone. The
+      // backend empties it when the payment actually
+      // settles, so a customer whose card is
+      // declined comes back to a cart they can
+      // retry with rather than an empty one.
+      window.location.assign(
+        payment.authorization_url
+      );
+
+    } catch (err) {
+      const message =
+        err instanceof Error
+          ? err.message
+          : "Unable to create your order.";
+
+      setError(message);
+
+      setLoading(false);
+    }
+  }
+
+  /**
+   * ------------------------------------------
+   * Loading
+   * ------------------------------------------
+   *
+   * The stored cart has not been restored yet, so
+   * whether it is empty is not yet known.
+   */
+
+  if (!hydrated) {
+    return (
+      <section className="min-h-screen bg-slate-50 py-16">
+        <Container>
+
+          <SectionTitle
+            title="Checkout"
+            subtitle="Loading your cart..."
+            align="left"
+          />
+
+        </Container>
+      </section>
+    );
+  }
 
   /**
    * ------------------------------------------
@@ -77,6 +272,10 @@ export default function Checkout() {
    * ------------------------------------------
    * Authentication
    * ------------------------------------------
+   *
+   * The cart survives this. It is stored locally
+   * for a guest, and merged into their account cart
+   * once they sign in.
    */
 
   if (!isAuthenticated) {
@@ -94,7 +293,8 @@ export default function Checkout() {
 
             <p className="text-slate-600">
               You need to be logged in to place
-              an order.
+              an order. Your cart will be waiting
+              for you.
             </p>
 
             <div className="mt-6 flex justify-center gap-3">
@@ -118,51 +318,6 @@ export default function Checkout() {
         </Container>
       </section>
     );
-  }
-
-  /**
-   * ------------------------------------------
-   * Create Order
-   * ------------------------------------------
-   */
-
-  async function handlePlaceOrder() {
-    if (loading) {
-      return;
-    }
-
-    setLoading(true);
-    setError("");
-
-    try {
-      await cartService.syncCart(
-        cartItems.map((item) => ({
-          product_id: item.id,
-          quantity: item.quantity,
-        }))
-      );
-
-      const order =
-        await orderService.createOrder();
-
-      const payment =
-        await paymentService.initialize(order.id);
-
-      clearCart();
-      window.location.assign(
-        payment.authorization_url
-      );
-
-    } catch (err) {
-      const message =
-        err instanceof Error
-          ? err.message
-          : "Unable to create your order.";
-
-      setError(message);
-
-      setLoading(false);
-    }
   }
 
   /**
@@ -195,38 +350,46 @@ export default function Checkout() {
 
             <div className="mt-6 divide-y divide-slate-200">
 
-              {cartItems.map((item) => (
+              {summary.lines.map((line) => (
                 <div
-                  key={item.id}
+                  key={line.productId}
                   className="flex items-center justify-between gap-4 py-5"
                 >
 
                   <div className="flex min-w-0 items-center gap-4">
 
-                    <img
-                      src={productImage(item)}
-                      alt={item.name}
-                      onError={handleImageError}
-                      className="
-                        h-20
-                        w-20
-                        rounded-xl
-                        object-cover
-                      "
-                    />
+                    {line.product && (
+                      <img
+                        src={productImage(
+                          line.product
+                        )}
+                        alt={line.product.name}
+                        onError={handleImageError}
+                        className="
+                          h-20
+                          w-20
+                          rounded-xl
+                          object-cover
+                        "
+                      />
+                    )}
 
                     <div className="min-w-0">
 
                       <h3 className="truncate font-semibold text-slate-900">
-                        {item.name}
+                        {line.product?.name ??
+                          `Product #${line.productId}`}
                       </h3>
 
                       <p className="mt-1 text-sm text-slate-500">
-                        Quantity: {item.quantity}
+                        Quantity: {line.quantity}
                       </p>
 
                       <p className="mt-1 text-sm text-slate-500">
-                        ${item.price.toFixed(2)} each
+                        {formatNaira(
+                          line.unitPrice
+                        )}{" "}
+                        each
                       </p>
 
                     </div>
@@ -234,11 +397,7 @@ export default function Checkout() {
                   </div>
 
                   <p className="shrink-0 font-semibold text-slate-900">
-                    $
-                    {(
-                      item.price *
-                      item.quantity
-                    ).toFixed(2)}
+                    {formatNaira(line.subtotal)}
                   </p>
 
                 </div>
@@ -277,7 +436,7 @@ export default function Checkout() {
                 <span>Items</span>
 
                 <span className="font-semibold">
-                  {totalItems}
+                  {summary.totalItems}
                 </span>
 
               </div>
@@ -287,7 +446,7 @@ export default function Checkout() {
                 <span>Subtotal</span>
 
                 <span className="font-semibold">
-                  ${totalPrice.toFixed(2)}
+                  {formatNaira(summary.total)}
                 </span>
 
               </div>
@@ -299,7 +458,7 @@ export default function Checkout() {
                 <span>Total</span>
 
                 <span>
-                  ${totalPrice.toFixed(2)}
+                  {formatNaira(summary.total)}
                 </span>
 
               </div>
@@ -339,8 +498,9 @@ export default function Checkout() {
             </div>
 
             <p className="mt-5 text-center text-sm text-slate-500">
-              Your order will be created securely
-              before proceeding to payment.
+              {summary.confirmed
+                ? "Confirmed with our store. Payment is taken in Naira."
+                : "Amounts are confirmed by our store before payment."}
             </p>
 
           </div>

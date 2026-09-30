@@ -15,6 +15,13 @@ import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import Wishlist from "./pages/Wishlist";
 import Account from "./pages/Account";
+import Orders from "./pages/Orders";
+
+// Informational Pages
+import Help from "./pages/Help";
+import About from "./pages/About";
+import ShippingReturns from "./pages/ShippingReturns";
+import NotFound from "./pages/NotFound";
 
 // Authentication Pages
 import Login from "./pages/Login";
@@ -90,8 +97,41 @@ export default function App() {
           />
 
           <Route
+            path="/orders"
+            element={<Orders />}
+          />
+
+          <Route
             path="/payment/callback"
             element={<PaymentCallback />}
+          />
+
+          {/* ==========================
+              INFORMATIONAL
+          ========================== */}
+
+          <Route
+            path="/help"
+            element={<Help />}
+          />
+
+          <Route
+            path="/about"
+            element={<About />}
+          />
+
+          <Route
+            path="/shipping-returns"
+            element={<ShippingReturns />}
+          />
+
+          {/* Anything else, inside the store
+              layout so the customer keeps the
+              header and footer to leave by. */}
+
+          <Route
+            path="*"
+            element={<NotFound />}
           />
 
         </Route>

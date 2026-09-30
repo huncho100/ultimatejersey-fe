@@ -1,3 +1,5 @@
+import { formatNaira } from "../../utils/currency";
+
 interface ProductPriceProps {
   price: number;
 
@@ -26,14 +28,14 @@ export default function ProductPrice({
         {/* Current Price */}
 
         <span className="text-3xl font-extrabold text-slate-900">
-          ${price}
+          {formatNaira(price)}
         </span>
 
         {/* Old Price */}
 
         {hasDiscount && (
           <span className="pb-1 text-lg text-slate-400 line-through">
-            ${oldPrice}
+            {formatNaira(oldPrice)}
           </span>
         )}
 
@@ -51,7 +53,7 @@ export default function ProductPrice({
           <span className="text-sm text-slate-500">
             Save
             <span className="ml-1 font-semibold text-slate-700">
-              ${oldPrice! - price}
+              {formatNaira(oldPrice - price)}
             </span>
           </span>
 

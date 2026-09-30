@@ -5,15 +5,15 @@ import EmptyWishlist from "../components/wishlist/EmptyWishlist";
 import WishlistItem from "../components/wishlist/WishlistItem";
 
 import { useWishlist } from "../context/WishlistContext";
-import { useCart } from "../context/CartContext";
+import { useProductActions } from "../hooks/useProductActions";
 
 export default function Wishlist() {
-  const {
-    wishlistItems,
-    removeFromWishlist,
-  } = useWishlist();
+  const { wishlistItems } = useWishlist();
 
-  const { addToCart } = useCart();
+  const {
+    moveProductToCart,
+    toggleProductInWishlist,
+  } = useProductActions();
 
   if (wishlistItems.length === 0) {
     return (
@@ -53,11 +53,14 @@ export default function Wishlist() {
               key={item.id}
               item={item}
               onMoveToCart={() => {
-                addToCart(item);
-                removeFromWishlist(item.id);
+                // The wishlist entry is given up by
+                // moveProductToCart, and only once
+                // the product is actually in the
+                // cart.
+                void moveProductToCart(item);
               }}
               onRemove={() =>
-                removeFromWishlist(item.id)
+                toggleProductInWishlist(item)
               }
             />
 

@@ -1,8 +1,10 @@
+import type { SortOption } from "../../types/filter";
+
 interface CatalogToolbarProps {
   total: number;
   showing: number;
-  sortBy: string;
-  onSortChange: (value: string) => void;
+  sortBy: SortOption;
+  onSortChange: (value: SortOption) => void;
 }
 
 export default function CatalogToolbar({
@@ -40,7 +42,11 @@ export default function CatalogToolbar({
         <select
           id="sort"
           value={sortBy}
-          onChange={(e) => onSortChange(e.target.value)}
+          onChange={(e) =>
+            onSortChange(
+              e.target.value as SortOption
+            )
+          }
           className="rounded-xl border border-slate-300 bg-white px-4 py-2 transition focus:border-blue-600 focus:outline-none"
         >
           <option value="featured">Featured</option>

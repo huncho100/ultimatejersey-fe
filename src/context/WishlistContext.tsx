@@ -1,21 +1,61 @@
 import {
   createContext,
+  useCallback,
   useContext,
   useMemo,
+  useRef,
   useState,
-  ReactNode,
+  type ReactNode,
 } from "react";
 
 import type { Product } from "../types/product";
 
+/**
+ * ===========================================
+ * Outcomes
+ * ===========================================
+ *
+ * What a wishlist change actually did, so that a
+ * caller can confirm it to the customer without
+ * having to work out for itself whether anything
+ * moved.
+ *
+ * "unchanged" covers saving something already saved
+ * and removing something that is not there. Neither
+ * is an error, and neither is worth announcing.
+ */
+export type WishlistOutcome =
+  | { status: "added" }
+  | { status: "removed" }
+  | { status: "unchanged" };
+
+/**
+ * ===========================================
+ * Context
+ * ===========================================
+ *
+ * The wishlist lives in memory for the current
+ * page session only. There is no wishlist table or
+ * endpoint on the backend, and nothing is written to
+ * storage, so a refresh empties it. Recorded here
+ * because it is a known limitation rather than a
+ * bug to be discovered later.
+ */
+
 interface WishlistContextType {
   wishlistItems: Product[];
 
-  addToWishlist: (product: Product) => void;
+  addToWishlist: (
+    product: Product
+  ) => WishlistOutcome;
 
-  removeFromWishlist: (id: number) => void;
+  removeFromWishlist: (
+    id: number
+  ) => WishlistOutcome;
 
-  toggleWishlist: (product: Product) => void;
+  toggleWishlist: (
+    product: Product
+  ) => WishlistOutcome;
 
   isInWishlist: (id: number) => boolean;
 
@@ -37,63 +77,107 @@ export function WishlistProvider({
   const [wishlistItems, setWishlistItems] =
     useState<Product[]>([]);
 
-  function addToWishlist(product: Product) {
-    setWishlistItems((prev) => {
+  /**
+   * The committed list, readable synchronously.
+   *
+   * These functions report what they did as they
+   * return, so they cannot read the list out of a
+   * render that a click earlier in the same tick has
+   * already made stale -- two fast clicks on the
+   * heart would both see "not saved" and both claim
+   * to have saved it.
+   */
+  const itemsRef = useRef<Product[]>([]);
+
+  const apply = useCallback((items: Product[]) => {
+    itemsRef.current = items;
+
+    setWishlistItems(items);
+  }, []);
+
+  const addToWishlist = useCallback(
+    (product: Product): WishlistOutcome => {
+      const current = itemsRef.current;
+
       if (
-        prev.some((item) => item.id === product.id)
+        current.some(
+          (item) => item.id === product.id
+        )
       ) {
-        return prev;
+        return { status: "unchanged" };
       }
 
-      return [...prev, product];
-    });
-  }
+      apply([...current, product]);
 
-  function removeFromWishlist(id: number) {
-    setWishlistItems((prev) =>
-      prev.filter((item) => item.id !== id)
-    );
-  }
+      return { status: "added" };
+    },
+    [apply]
+  );
 
-  function toggleWishlist(product: Product) {
-    const exists = wishlistItems.some(
-      (item) => item.id === product.id
-    );
+  const removeFromWishlist = useCallback(
+    (id: number): WishlistOutcome => {
+      const current = itemsRef.current;
 
-    if (exists) {
-      removeFromWishlist(product.id);
-    } else {
-      addToWishlist(product);
-    }
-  }
+      const next = current.filter(
+        (item) => item.id !== id
+      );
 
-  function isInWishlist(id: number) {
-    return wishlistItems.some(
-      (item) => item.id === id
-    );
-  }
+      if (next.length === current.length) {
+        return { status: "unchanged" };
+      }
 
-  function clearWishlist() {
-    setWishlistItems([]);
-  }
+      apply(next);
 
-  const totalWishlistItems = useMemo(
-    () => wishlistItems.length,
+      return { status: "removed" };
+    },
+    [apply]
+  );
+
+  const toggleWishlist = useCallback(
+    (product: Product): WishlistOutcome =>
+      itemsRef.current.some(
+        (item) => item.id === product.id
+      )
+        ? removeFromWishlist(product.id)
+        : addToWishlist(product),
+    [addToWishlist, removeFromWishlist]
+  );
+
+  const isInWishlist = useCallback(
+    (id: number) =>
+      wishlistItems.some((item) => item.id === id),
     [wishlistItems]
   );
 
+  const clearWishlist = useCallback(() => {
+    apply([]);
+  }, [apply]);
+
+  const totalWishlistItems = wishlistItems.length;
+
+  const value = useMemo<WishlistContextType>(
+    () => ({
+      wishlistItems,
+      addToWishlist,
+      removeFromWishlist,
+      toggleWishlist,
+      isInWishlist,
+      clearWishlist,
+      totalWishlistItems,
+    }),
+    [
+      wishlistItems,
+      addToWishlist,
+      removeFromWishlist,
+      toggleWishlist,
+      isInWishlist,
+      clearWishlist,
+      totalWishlistItems,
+    ]
+  );
+
   return (
-    <WishlistContext.Provider
-      value={{
-        wishlistItems,
-        addToWishlist,
-        removeFromWishlist,
-        toggleWishlist,
-        isInWishlist,
-        clearWishlist,
-        totalWishlistItems,
-      }}
-    >
+    <WishlistContext.Provider value={value}>
       {children}
     </WishlistContext.Provider>
   );

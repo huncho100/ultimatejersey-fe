@@ -7,6 +7,7 @@ import {
 import Button from "../ui/Button";
 
 import { useWishlist } from "../../context/WishlistContext";
+import { useProductActions } from "../../hooks/useProductActions";
 
 import type { Product } from "../../types/product";
 
@@ -14,6 +15,9 @@ interface ProductActionsProps {
   product: Product;
 
   disabled?: boolean;
+
+  /** True while the add is still in flight. */
+  busy?: boolean;
 
   onAddToCart?: () => void;
 
@@ -23,26 +27,22 @@ interface ProductActionsProps {
 export default function ProductActions({
   product,
   disabled = false,
+  busy = false,
   onAddToCart,
   onBuyNow,
 }: ProductActionsProps) {
 
-  const {
-    wishlistItems,
-    addToWishlist,
-    removeFromWishlist,
-  } = useWishlist();
+  const { wishlistItems } = useWishlist();
+
+  const { toggleProductInWishlist } =
+    useProductActions();
 
   const isWishlisted = wishlistItems.some(
     (item) => item.id === product.id
   );
 
   function handleWishlist() {
-    if (isWishlisted) {
-      removeFromWishlist(product.id);
-    } else {
-      addToWishlist(product);
-    }
+    toggleProductInWishlist(product);
   }
 
   return (
@@ -62,11 +62,11 @@ export default function ProductActions({
           py-2
           text-base
         "
-        disabled={disabled}
+        disabled={disabled || busy}
         onClick={onAddToCart}
       >
         <ShoppingCart size={18} />
-        Add to Cart
+        {busy ? "Adding..." : "Add to Cart"}
       </Button>
 
       {/* Buy Now */}
@@ -84,7 +84,7 @@ export default function ProductActions({
           py-2
           text-base
         "
-        disabled={disabled}
+        disabled={disabled || busy}
         onClick={onBuyNow}
       >
         <CreditCard size={18} />

@@ -1,4 +1,8 @@
-import { useMemo, useState } from "react";
+import {
+  useDeferredValue,
+  useMemo,
+  useState,
+} from "react";
 import { Link } from "react-router-dom";
 import { Search as SearchIcon, X } from "lucide-react";
 
@@ -11,6 +15,7 @@ import { useProducts } from "../context/ProductsContext";
 
 import {
   handleImageError,
+  matchesQuery,
   productHeading,
   productImage,
 } from "../utils/catalog";
@@ -20,22 +25,25 @@ export default function Search() {
 
   const [query, setQuery] = useState("");
 
-  const results = useMemo(() => {
-    const search = query.trim().toLowerCase();
+  // Keep the field responsive while the results
+  // below it re-filter. Nothing is requested, so
+  // there is no traffic to debounce.
+  const deferredQuery = useDeferredValue(query);
 
+  const results = useMemo(() => {
+    const search = deferredQuery
+      .trim()
+      .toLowerCase();
+
+    // This page starts empty rather than listing the
+    // whole catalog, so an empty box means no results
+    // rather than every result.
     if (!search) return [];
 
-    return products.filter((product) => {
-      return (
-        product.team?.toLowerCase().includes(search) ||
-        product.name.toLowerCase().includes(search) ||
-        product.sport.toLowerCase().includes(search) ||
-        product.category.toLowerCase().includes(search) ||
-        product.brand?.toLowerCase().includes(search) ||
-        product.league?.toLowerCase().includes(search)
-      );
-    });
-  }, [products, query]);
+    return products.filter((product) =>
+      matchesQuery(product, search)
+    );
+  }, [products, deferredQuery]);
 
   const suggestions = results.slice(0, 5);
 
@@ -59,9 +67,10 @@ export default function Search() {
           />
 
           <input
-            type="text"
+            type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            aria-label="Search jerseys"
             placeholder="Search Manchester United, Chelsea, Haaland..."
             className="
               w-full
@@ -78,12 +87,15 @@ export default function Search() {
               focus:border-blue-600
               focus:ring-4
               focus:ring-blue-100
+
+              [&::-webkit-search-cancel-button]:appearance-none
             "
           />
 
           {query && (
             <button
               onClick={() => setQuery("")}
+              aria-label="Clear search"
               className="
                 absolute
                 right-5

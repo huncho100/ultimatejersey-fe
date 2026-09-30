@@ -1,5 +1,7 @@
 import { apiRequest } from "./api";
 
+import { parseDecimal } from "../utils/currency";
+
 import type { Product } from "../types/product";
 
 /**
@@ -54,19 +56,6 @@ export interface ApiProduct {
  * ===========================================
  */
 
-function toNumber(
-  value: string | number | null
-): number {
-  if (value === null) return 0;
-
-  const parsed =
-    typeof value === "number"
-      ? value
-      : Number.parseFloat(value);
-
-  return Number.isFinite(parsed) ? parsed : 0;
-}
-
 /**
  * Convert one API product into the shape the UI
  * expects.
@@ -90,14 +79,14 @@ export function toProduct(
     league: data.league,
     brand: data.brand,
 
-    price: toNumber(data.price),
+    price: parseDecimal(data.price),
 
     oldPrice:
       data.old_price === null
         ? null
-        : toNumber(data.old_price),
+        : parseDecimal(data.old_price),
 
-    rating: toNumber(data.rating),
+    rating: parseDecimal(data.rating),
 
     image: data.image,
 

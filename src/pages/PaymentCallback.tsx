@@ -4,6 +4,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import Container from "../components/ui/Container";
 import Button from "../components/ui/Button";
 import { paymentService } from "../services/paymentService";
+import { useCart } from "../context/CartContext";
 
 type VerificationState = "loading" | "success" | "failed";
 
@@ -17,6 +18,8 @@ export default function PaymentCallback() {
   const [message, setMessage] = useState(
     "Verifying your payment..."
   );
+
+  const { refreshCart } = useCart();
 
   useEffect(() => {
     if (!reference) {
@@ -35,6 +38,12 @@ export default function PaymentCallback() {
             ? "Your payment was successful."
             : `Payment status: ${payment.status}.`
         );
+
+        // The backend empties the cart itself once a
+        // payment settles, so read it back rather
+        // than clearing here -- a failed payment
+        // leaves the cart in place to retry with.
+        void refreshCart();
       })
       .catch((error: unknown) => {
         setState("failed");
@@ -44,7 +53,7 @@ export default function PaymentCallback() {
             : "Unable to verify your payment."
         );
       });
-  }, [reference]);
+  }, [reference, refreshCart]);
 
   return (
     <section className="min-h-screen bg-slate-50 py-20">

@@ -5,14 +5,18 @@ import {
   Tag,
   CheckCircle,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { useRef, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 import ProductPrice from "./ProductPrice";
 import ProductSizes from "./ProductSizes";
 import QuantitySelector from "./QuantitySelector";
 import ProductActions from "./ProductActions";
 
-import { useCart } from "../../context/CartContext";
+import {
+  maxQuantityFor,
+} from "../../context/CartContext";
+import { useProductActions } from "../../hooks/useProductActions";
 
 import type { Product } from "../../types/product";
 
@@ -26,7 +30,80 @@ export default function ProductInfo({
   product,
 }: ProductInfoProps) {
 
-  const { addToCart } = useCart();
+  const { addProductToCart } = useProductActions();
+
+  const navigate = useNavigate();
+
+  /**
+   * The selected quantity lives here rather than
+   * inside QuantitySelector, so that the number on
+   * screen is the same number Add to Cart and Buy Now
+   * act on.
+   */
+  const [quantity, setQuantity] = useState(1);
+
+  /**
+   * True from the click until the cart has accepted
+   * the add. Both buttons close for that time, which
+   * is also what stops a second click adding the
+   * quantity twice.
+   */
+  const [busy, setBusy] = useState(false);
+
+  /**
+   * Buy Now adds and then navigates. A second click
+   * landing before the route changes would add the
+   * quantity twice, so the guard is a ref: state
+   * updates too late to stop the click already in
+   * progress.
+   */
+  const buying = useRef(false);
+
+  const available = maxQuantityFor(product);
+
+  const soldOut = available < 1;
+
+  async function handleAddToCart() {
+    if (busy || soldOut) return;
+
+    setBusy(true);
+
+    try {
+      await addProductToCart(product, quantity);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleBuyNow() {
+    if (buying.current || busy || soldOut) return;
+
+    buying.current = true;
+    setBusy(true);
+
+    try {
+      const added = await addProductToCart(
+        product,
+        quantity
+      );
+
+      // Checkout builds its order from the cart. Going
+      // there after a refused add would show the
+      // customer a checkout for something else --
+      // whatever the cart held already, or nothing at
+      // all. The notification has already said why.
+      if (!added) return;
+
+      // Straight into the existing checkout flow, which
+      // creates the order on the backend and starts the
+      // Paystack payment. A guest lands on its sign-in
+      // prompt with the cart intact.
+      navigate("/checkout");
+    } finally {
+      buying.current = false;
+      setBusy(false);
+    }
+  }
 
   return (
     <div className="space-y-6">
@@ -72,23 +149,37 @@ export default function ProductInfo({
 
         <div className="mt-4 flex flex-wrap items-center gap-4">
 
-          <div className="flex items-center gap-2">
+          {/*
+            The rating is a field an administrator
+            sets on the product. It is not an average
+            of customer reviews -- the backend has no
+            reviews to average -- so it is labelled
+            for what it is, and left out entirely
+            when nobody has set one.
+          */}
 
-            <Star
-              size={18}
-              fill="currentColor"
-              className="text-amber-500"
-            />
+          {product.rating > 0 && (
 
-            <span className="font-semibold text-slate-700">
-              {product.rating}
-            </span>
+            <div className="flex items-center gap-2">
 
-            <span className="text-sm text-slate-500">
-              (128 Reviews)
-            </span>
+              <Star
+                size={18}
+                fill="currentColor"
+                className="text-amber-500"
+                aria-hidden="true"
+              />
 
-          </div>
+              <span className="font-semibold text-slate-700">
+                {product.rating}
+              </span>
+
+              <span className="text-sm text-slate-500">
+                Product rating
+              </span>
+
+            </div>
+
+          )}
 
           {product.inStock && (
             <div className="flex items-center gap-2 rounded-full bg-green-50 px-3 py-1 text-sm font-semibold text-green-700">
@@ -151,7 +242,12 @@ export default function ProductInfo({
 
       {/* Quantity */}
 
-      <QuantitySelector />
+      <QuantitySelector
+        value={quantity}
+        onChange={setQuantity}
+        max={available}
+        disabled={soldOut}
+      />
 
       <hr className="border-slate-200" />
 
@@ -159,7 +255,10 @@ export default function ProductInfo({
 
       <ProductActions
         product={product}
-        onAddToCart={() => addToCart(product)}
+        disabled={soldOut}
+        busy={busy}
+        onAddToCart={() => void handleAddToCart()}
+        onBuyNow={() => void handleBuyNow()}
       />
 
     </div>

@@ -8,27 +8,37 @@ import { AuthProvider } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
 import { WishlistProvider } from "./context/WishlistContext";
 import { ProductsProvider } from "./context/ProductsContext";
+import { ToastProvider } from "./components/ui/Toast";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
 
-    <AuthProvider>
+    {/*
+      Outermost, so that any part of the tree can
+      raise a notification, and so the viewport is
+      rendered above everything the routes draw.
+    */}
+    <ToastProvider>
 
-      <ProductsProvider>
+      <AuthProvider>
 
-        <WishlistProvider>
+        <ProductsProvider>
 
-          <CartProvider>
+          <WishlistProvider>
 
-            <App />
+            <CartProvider>
 
-          </CartProvider>
+              <App />
 
-        </WishlistProvider>
+            </CartProvider>
 
-      </ProductsProvider>
+          </WishlistProvider>
 
-    </AuthProvider>
+        </ProductsProvider>
+
+      </AuthProvider>
+
+    </ToastProvider>
 
   </React.StrictMode>
 );

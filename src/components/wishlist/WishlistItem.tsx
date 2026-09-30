@@ -11,6 +11,8 @@ import {
   productImage,
 } from "../../utils/catalog";
 
+import { formatNaira } from "../../utils/currency";
+
 interface WishlistItemProps {
   item: Product;
 
@@ -64,12 +66,12 @@ export default function WishlistItem({
 
             {item.oldPrice && (
               <p className="text-sm text-slate-400 line-through">
-                ${item.oldPrice}
+                {formatNaira(item.oldPrice)}
               </p>
             )}
 
             <p className="text-xl font-bold text-slate-900">
-              ${item.price}
+              {formatNaira(item.price)}
             </p>
 
           </div>

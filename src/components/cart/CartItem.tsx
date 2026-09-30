@@ -4,13 +4,15 @@ import {
   Trash2,
 } from "lucide-react";
 
-import type { CartItem as CartItemType } from "../../context/CartContext";
+import type { CartItem as CartItemType } from "../../types/cart";
 
 import {
   handleImageError,
   productHeading,
   productImage,
 } from "../../utils/catalog";
+
+import { formatNaira } from "../../utils/currency";
 
 interface CartItemProps {
   item: CartItemType;
@@ -116,7 +118,17 @@ export default function CartItem({
           >
             <button
               onClick={onDecrease}
-              className="transition hover:text-blue-600"
+              // One is the floor. Emptying the line
+              // is what Remove is for.
+              disabled={item.quantity <= 1}
+              aria-label="Decrease quantity"
+              className="
+                transition
+                hover:text-blue-600
+                disabled:cursor-not-allowed
+                disabled:text-slate-300
+                disabled:hover:text-slate-300
+              "
             >
               <Minus size={18} />
             </button>
@@ -127,6 +139,7 @@ export default function CartItem({
 
             <button
               onClick={onIncrease}
+              aria-label="Increase quantity"
               className="transition hover:text-blue-600"
             >
               <Plus size={18} />
@@ -138,7 +151,9 @@ export default function CartItem({
           <div className="text-left md:text-right">
 
             <p className="text-2xl font-bold text-slate-900">
-              ${(item.price * item.quantity).toFixed(2)}
+              {formatNaira(
+                item.price * item.quantity
+              )}
             </p>
 
             <button

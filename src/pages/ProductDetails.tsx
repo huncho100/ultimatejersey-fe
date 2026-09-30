@@ -6,7 +6,7 @@ import CatalogState from "../components/catalog/CatalogState";
 
 import ProductGallery from "../components/products/ProductGallery";
 import ProductInfo from "../components/products/ProductInfo";
-import ProductDescription from "../components/products/ProductDescription";
+import ProductTabs from "../components/products/ProductTabs";
 import RelatedProducts from "../components/products/RelatedProducts";
 
 import { useProducts } from "../context/ProductsContext";
@@ -138,8 +138,8 @@ export default function ProductDetails() {
 
         </div>
 
-        <ProductDescription
-          description={product.description}
+        <ProductTabs
+          product={product}
         />
 
         <RelatedProducts

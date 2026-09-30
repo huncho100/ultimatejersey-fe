@@ -103,37 +103,114 @@ export function productHeading(
  * settle here.
  */
 
-const NATIONAL_TEAM_LEAGUE = "National Team";
+/**
+ * The values an administrator has to enter for a
+ * product to land in each collection.
+ *
+ * Exported because the collection pages quote them
+ * when they turn up empty. A page that says "no retro
+ * kits yet" is not much help on its own; one that
+ * also says which field to set is.
+ */
+
+export const NATIONAL_TEAM_LEAGUE = "National Team";
+
+export const RETRO_CATEGORY = "Retro";
 
 const FOOTBALL = "Football";
 
 const BASKETBALL = "Basketball";
 
-const RETRO_CATEGORY = "Retro";
+/**
+ * Collection membership is decided by comparing
+ * free-text columns, and the people filling them in
+ * are typing rather than picking from a list. Casing
+ * and stray whitespace are not meaningful differences
+ * here, and treating them as such is how a correctly
+ * categorised product ends up on no page at all.
+ */
+function normalize(
+  value: string | null | undefined
+): string {
+  return (value ?? "").trim().toLowerCase();
+}
+
+const NATIONAL_TEAM_KEY = normalize(
+  NATIONAL_TEAM_LEAGUE
+);
+
+const RETRO_KEY = normalize(RETRO_CATEGORY);
+
+const FOOTBALL_KEY = normalize(FOOTBALL);
+
+const BASKETBALL_KEY = normalize(BASKETBALL);
 
 export function isNationalTeamJersey(
   product: Product
 ): boolean {
-  return product.league === NATIONAL_TEAM_LEAGUE;
+  return (
+    normalize(product.league) === NATIONAL_TEAM_KEY
+  );
 }
 
 export function isClubJersey(
   product: Product
 ): boolean {
   return (
-    product.sport === FOOTBALL &&
-    product.league !== NATIONAL_TEAM_LEAGUE
+    normalize(product.sport) === FOOTBALL_KEY &&
+    normalize(product.league) !== NATIONAL_TEAM_KEY
   );
 }
 
 export function isRetroJersey(
   product: Product
 ): boolean {
-  return product.category === RETRO_CATEGORY;
+  return normalize(product.category) === RETRO_KEY;
 }
 
 export function isBasketballJersey(
   product: Product
 ): boolean {
-  return product.sport === BASKETBALL;
+  return (
+    normalize(product.sport) === BASKETBALL_KEY
+  );
+}
+
+/**
+ * ===========================================
+ * Searching
+ * ===========================================
+ */
+
+/**
+ * Does this product match a search term?
+ *
+ * Every text column a customer might reasonably type
+ * is searched: name, team, brand, league, category
+ * and sport. There is no description column on the
+ * products table, so there is nothing else to look
+ * at.
+ *
+ * `query` is expected already trimmed and lowercased
+ * -- callers filter a whole list against one term, so
+ * normalising it per product would be wasted work.
+ */
+export function matchesQuery(
+  product: Product,
+  query: string
+): boolean {
+  if (!query) return true;
+
+  const fields = [
+    product.name,
+    product.team,
+    product.brand,
+    product.league,
+    product.category,
+    product.sport,
+  ];
+
+  return fields.some((field) =>
+    field?.toLowerCase().includes(query)
+  );
 }

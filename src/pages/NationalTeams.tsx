@@ -1,158 +1,40 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 
-import type { ClubFiltersState } from "../types/filter";
-
-import Container from "../components/ui/Container";
-import SectionTitle from "../components/ui/SectionTitle";
-
-import ClubSearch from "../components/clubs/ClubSearch";
-import ClubFilters from "../components/clubs/ClubFilters";
-import ClubGrid from "../components/clubs/ClubGrid";
-
-import CatalogToolbar from "../components/catalog/CatalogToolbar";
-import CatalogState from "../components/catalog/CatalogState";
+import CatalogPage from "../components/catalog/CatalogPage";
+import EmptyCollection from "../components/catalog/EmptyCollection";
 
 import { useProducts } from "../context/ProductsContext";
-import { isNationalTeamJersey } from "../utils/catalog";
 
-const defaultFilters: ClubFiltersState = {
-  leagues: [],
-  brands: [],
-  categories: [],
-};
+import {
+  isNationalTeamJersey,
+  NATIONAL_TEAM_LEAGUE,
+} from "../utils/catalog";
 
 export default function NationalTeams() {
-  const { products, loading, error, reload } = useProducts();
-
-  const [search, setSearch] = useState("");
-
-  const [filters, setFilters] =
-    useState<ClubFiltersState>(defaultFilters);
-
-  const [sortBy, setSortBy] =
-    useState("featured");
+  const { products, loading, error, reload } =
+    useProducts();
 
   const nationalTeamProducts = useMemo(
     () => products.filter(isNationalTeamJersey),
     [products]
   );
 
-  const filteredProducts = useMemo(() => {
-    const query = search.toLowerCase().trim();
-
-    const results = nationalTeamProducts.filter((product) => {
-      const matchesSearch =
-        !query ||
-        product.team?.toLowerCase().includes(query) ||
-        product.name.toLowerCase().includes(query) ||
-        product.brand?.toLowerCase().includes(query) ||
-        product.category.toLowerCase().includes(query);
-
-      const matchesLeague =
-        filters.leagues.length === 0 ||
-        filters.leagues.includes(product.league ?? "");
-
-      const matchesBrand =
-        filters.brands.length === 0 ||
-        filters.brands.includes(product.brand ?? "");
-
-      const matchesCategory =
-        filters.categories.length === 0 ||
-        filters.categories.includes(product.category);
-
-      return (
-        matchesSearch &&
-        matchesLeague &&
-        matchesBrand &&
-        matchesCategory
-      );
-    });
-
-    switch (sortBy) {
-      case "price-low":
-        results.sort((a, b) => a.price - b.price);
-        break;
-
-      case "price-high":
-        results.sort((a, b) => b.price - a.price);
-        break;
-
-      case "rating":
-        results.sort((a, b) => b.rating - a.rating);
-        break;
-
-      case "newest":
-        results.sort((a, b) => {
-          if (a.isNew && !b.isNew) return -1;
-          if (!a.isNew && b.isNew) return 1;
-          return 0;
-        });
-        break;
-
-      default:
-        results.sort((a, b) => {
-          if (a.isFeatured && !b.isFeatured) return -1;
-          if (!a.isFeatured && b.isFeatured) return 1;
-          return 0;
-        });
-    }
-
-    return results;
-  }, [nationalTeamProducts, search, filters, sortBy]);
-
   return (
-    <section className="min-h-screen bg-slate-50 py-16">
-      <Container>
-
-        <SectionTitle
-          title="National Teams"
-          subtitle="Official jerseys from the world's biggest international football teams."
-          align="left"
+    <CatalogPage
+      title="National Teams"
+      subtitle="Official jerseys from the world's biggest international football teams."
+      products={nationalTeamProducts}
+      loading={loading}
+      error={error}
+      onRetry={reload}
+      searchPlaceholder="Search countries, players, brands..."
+      emptyCollection={
+        <EmptyCollection
+          collection="national team jerseys"
+          field="league"
+          value={NATIONAL_TEAM_LEAGUE}
         />
-
-        <div className="mt-8">
-          <ClubSearch
-            value={search}
-            onChange={setSearch}
-          />
-        </div>
-
-        <div className="mt-10 grid gap-10 lg:grid-cols-[280px_1fr]">
-
-          <ClubFilters
-            products={nationalTeamProducts}
-            filters={filters}
-            onChange={setFilters}
-          />
-
-          <div>
-
-            {loading || error ? (
-              <CatalogState
-                loading={loading}
-                error={error}
-                onRetry={reload}
-              />
-            ) : (
-              <>
-                <CatalogToolbar
-                  total={nationalTeamProducts.length}
-                  showing={filteredProducts.length}
-                  sortBy={sortBy}
-                  onSortChange={setSortBy}
-                />
-
-                <ClubGrid
-                  products={filteredProducts}
-                />
-              </>
-            )}
-
-          </div>
-
-        </div>
-
-      </Container>
-    </section>
+      }
+    />
   );
 }

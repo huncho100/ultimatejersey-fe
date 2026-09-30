@@ -1,30 +1,72 @@
 import { Minus, Plus } from "lucide-react";
-import { useState } from "react";
+
+/**
+ * ===========================================
+ * Quantity Selector
+ * ===========================================
+ *
+ * Controlled. The selected quantity belongs to
+ * whoever is going to act on it -- the page that adds
+ * to the cart -- rather than to this component, so
+ * that what the customer sees here and what gets
+ * added are necessarily the same number.
+ */
 
 interface QuantitySelectorProps {
-  initialQuantity?: number;
-  onChange?: (quantity: number) => void;
+  value: number;
+
+  onChange: (quantity: number) => void;
+
+  /**
+   * The most that can be selected. Usually the stock
+   * the backend will allow.
+   */
+  max?: number;
+
+  disabled?: boolean;
 }
 
 export default function QuantitySelector({
-  initialQuantity = 1,
+  value,
   onChange,
+  max,
+  disabled = false,
 }: QuantitySelectorProps) {
-  const [quantity, setQuantity] = useState(initialQuantity);
+  const ceiling =
+    typeof max === "number" && max > 0
+      ? max
+      : Infinity;
+
+  // One is the floor. A quantity below it is not an
+  // order for less, it is no order at all.
+  const atMin = disabled || value <= 1;
+
+  const atMax = disabled || value >= ceiling;
 
   function increase() {
-    const newQuantity = quantity + 1;
-    setQuantity(newQuantity);
-    onChange?.(newQuantity);
+    if (atMax) return;
+
+    onChange(Math.min(value + 1, ceiling));
   }
 
   function decrease() {
-    if (quantity === 1) return;
+    if (atMin) return;
 
-    const newQuantity = quantity - 1;
-    setQuantity(newQuantity);
-    onChange?.(newQuantity);
+    onChange(value - 1);
   }
+
+  const stepClasses = `
+    flex
+    h-11
+    w-11
+    items-center
+    justify-center
+    transition
+    hover:bg-slate-100
+    disabled:cursor-not-allowed
+    disabled:text-slate-300
+    disabled:hover:bg-transparent
+  `;
 
   return (
     <div className="space-y-2">
@@ -50,20 +92,15 @@ export default function QuantitySelector({
         <button
           type="button"
           onClick={decrease}
-          className="
-            flex
-            h-11
-            w-11
-            items-center
-            justify-center
-            transition
-            hover:bg-slate-100
-          "
+          disabled={atMin}
+          aria-label="Decrease quantity"
+          className={stepClasses}
         >
           <Minus size={18} />
         </button>
 
         <div
+          aria-live="polite"
           className="
             flex
             h-11
@@ -76,26 +113,28 @@ export default function QuantitySelector({
             font-bold
           "
         >
-          {quantity}
+          {value}
         </div>
 
         <button
           type="button"
           onClick={increase}
-          className="
-            flex
-            h-11
-            w-11
-            items-center
-            justify-center
-            transition
-            hover:bg-slate-100
-          "
+          disabled={atMax}
+          aria-label="Increase quantity"
+          className={stepClasses}
         >
           <Plus size={18} />
         </button>
 
       </div>
+
+      {/* Only worth saying once the limit is in reach. */}
+
+      {ceiling !== Infinity && ceiling <= 10 && (
+        <p className="text-sm text-amber-600">
+          Only {ceiling} left in stock.
+        </p>
+      )}
 
     </div>
   );

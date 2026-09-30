@@ -1,10 +1,12 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Heart, Star } from "lucide-react";
 
 import Button from "../ui/Button";
 
-import { useCart } from "../../context/CartContext";
+import { maxQuantityFor } from "../../context/CartContext";
 import { useWishlist } from "../../context/WishlistContext";
+import { useProductActions } from "../../hooks/useProductActions";
 
 import type { Product } from "../../types/product";
 
@@ -14,6 +16,8 @@ import {
   productImage,
 } from "../../utils/catalog";
 
+import { formatNaira } from "../../utils/currency";
+
 interface ProductCardProps {
   product: Product;
 }
@@ -22,17 +26,26 @@ export default function ProductCard({
   product,
 }: ProductCardProps) {
 
-  const { addToCart } = useCart();
+  const soldOut = maxQuantityFor(product) < 1;
+
+  const { wishlistItems } = useWishlist();
 
   const {
-    wishlistItems,
-    addToWishlist,
-    removeFromWishlist,
-  } = useWishlist();
+    addProductToCart,
+    toggleProductInWishlist,
+  } = useProductActions();
 
   const isWishlisted = wishlistItems.some(
     (item) => item.id === product.id
   );
+
+  /**
+   * True while this card's add is on its way to the
+   * backend. The button is held closed for that time
+   * so a second click cannot start a second add
+   * before the first has been confirmed.
+   */
+  const [adding, setAdding] = useState(false);
 
   function handleWishlistClick(
     e: React.MouseEvent<HTMLButtonElement>
@@ -40,10 +53,20 @@ export default function ProductCard({
     e.preventDefault();
     e.stopPropagation();
 
-    if (isWishlisted) {
-      removeFromWishlist(product.id);
-    } else {
-      addToWishlist(product);
+    toggleProductInWishlist(product);
+  }
+
+  async function handleAddToCart() {
+    if (soldOut || adding) return;
+
+    setAdding(true);
+
+    try {
+      // One from a card. The quantity picker lives
+      // on the product page.
+      await addProductToCart(product, 1);
+    } finally {
+      setAdding(false);
     }
   }
 
@@ -66,6 +89,12 @@ export default function ProductCard({
 
         <button
           onClick={handleWishlistClick}
+          aria-label={
+            isWishlisted
+              ? `Remove ${product.name} from wishlist`
+              : `Save ${product.name} to wishlist`
+          }
+          aria-pressed={isWishlisted}
           className={`
             absolute
             right-4
@@ -145,25 +174,32 @@ export default function ProductCard({
 
               {product.oldPrice && (
                 <p className="text-sm text-slate-400 line-through">
-                  ${product.oldPrice}
+                  {formatNaira(product.oldPrice)}
                 </p>
               )}
 
               <p className="text-2xl font-extrabold text-slate-900">
-                ${product.price}
+                {formatNaira(product.price)}
               </p>
 
             </div>
 
             <div
               onClick={(e) => {
+                // The whole card is a link. Adding to
+                // the cart must not also navigate.
                 e.preventDefault();
                 e.stopPropagation();
-                addToCart(product);
+
+                void handleAddToCart();
               }}
             >
-              <Button>
-                Add to Cart
+              <Button disabled={soldOut || adding}>
+                {soldOut
+                  ? "Out of Stock"
+                  : adding
+                    ? "Adding..."
+                    : "Add to Cart"}
               </Button>
             </div>
 

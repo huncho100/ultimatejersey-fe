@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 
 import Button from "../ui/Button";
 
+import { formatNaira } from "../../utils/currency";
+
 interface CartSummaryProps {
   subtotal: number;
 }
@@ -93,7 +95,7 @@ export default function CartSummary({
           <span>Subtotal</span>
 
           <span className="font-semibold">
-            ${subtotal.toFixed(2)}
+            {formatNaira(subtotal)}
           </span>
 
         </div>
@@ -104,7 +106,7 @@ export default function CartSummary({
 
           <span>Total</span>
 
-          <span>${total.toFixed(2)}</span>
+          <span>{formatNaira(total)}</span>
 
         </div>
 
