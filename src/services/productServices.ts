@@ -32,6 +32,8 @@ export interface ApiProduct {
   league: string | null;
   brand: string | null;
 
+  description: string | null;
+
   price: string;
   old_price: string | null;
 
@@ -60,10 +62,15 @@ export interface ApiProduct {
  * Convert one API product into the shape the UI
  * expects.
  *
- * gallery, description and sizes are deliberately
- * absent: the products table has no such columns,
- * and inventing values here would put text on the
- * page that nobody in the business wrote.
+ * gallery and sizes are deliberately absent: the
+ * products table has no such columns, and inventing
+ * values here would put content on the page that
+ * nobody in the business wrote.
+ *
+ * description does have a column, but it is nullable
+ * and null for any product an administrator has not
+ * written one for. It is passed through exactly as
+ * sent -- no fallback text is assembled here.
  */
 export function toProduct(
   data: ApiProduct
@@ -78,6 +85,8 @@ export function toProduct(
 
     league: data.league,
     brand: data.brand,
+
+    description: data.description,
 
     price: parseDecimal(data.price),
 

@@ -27,6 +27,11 @@ export interface Product {
   league?: string | null;
   brand?: string | null;
 
+  // Nullable on the API. null means no description has
+  // been published, which the Description tab reports
+  // plainly rather than filling in.
+  description?: string | null;
+
   // Pricing. Already parsed into numbers; the API
   // sends these as decimal strings.
   price: number;
@@ -41,7 +46,6 @@ export interface Product {
   // Not supplied by the API. Anything reading these
   // must cope with them being absent.
   gallery?: string[];
-  description?: string;
   sizes?: string[];
 
   // Status

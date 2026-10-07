@@ -15,18 +15,18 @@
  * about goods, made by the website rather than by
  * the store, and no product record supports them.
  *
- * The products table has no description column
- * either, so in practice nothing reaches the
- * `description` prop today and every product shows
- * the empty state below. Adding descriptions is an
- * administrator and backend task, noted in
+ * The products table has a nullable `description`
+ * column. It is null for every product an
+ * administrator has not written one for, and those
+ * show the empty state below. Writing the
+ * descriptions is an administrator task, noted in
  * docs/product-content.md.
  */
 
 export default function ProductDescription({
   description,
 }: {
-  description?: string;
+  description?: string | null;
 }) {
   const text = description?.trim();
 
@@ -40,7 +40,7 @@ export default function ProductDescription({
   }
 
   return (
-    <p className="text-lg leading-8 text-slate-600">
+    <p className="whitespace-pre-line text-lg leading-8 text-slate-600">
       {text}
     </p>
   );

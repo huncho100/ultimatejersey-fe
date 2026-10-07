@@ -187,9 +187,12 @@ export function isBasketballJersey(
  *
  * Every text column a customer might reasonably type
  * is searched: name, team, brand, league, category
- * and sport. There is no description column on the
- * products table, so there is nothing else to look
- * at.
+ * and sport.
+ *
+ * `description` is deliberately not searched. It is
+ * long-form prose and matching on it would surface
+ * products whose only connection to the term is a
+ * passing mention, which reads as a wrong result.
  *
  * `query` is expected already trimmed and lowercased
  * -- callers filter a whole list against one term, so
