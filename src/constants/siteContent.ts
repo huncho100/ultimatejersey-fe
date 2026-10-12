@@ -69,31 +69,50 @@ export interface InfoSection {
  */
 
 /** e.g. "support@ultimatekits.com" */
-export const SUPPORT_EMAIL: string | null = null;
+export const SUPPORT_EMAIL: string | null = "paulterlumun101@gmail.com";
 
 /** e.g. "+234 ..." */
-export const SUPPORT_PHONE: string | null = null;
+export const SUPPORT_PHONE: string | null = "+2348164648716";
 
 /**
  * Delivery areas, timescales and charges, one
  * statement per line.
  */
-export const DELIVERY_TERMS: string[] | null = null;
+export const DELIVERY_TERMS: string[] = [
+  "Orders are processed within 1-2 business days.",
+  "Delivery within Lagos typically takes 1-3 business days.",
+  "Delivery outside Lagos typically takes 3-7 business days.",
+  "Customers will receive tracking information once an order is shipped.",
+  "Delivery times may be affected by public holidays or unforeseen circumstances.",
+  "Customers must provide a valid delivery address and phone number."
+];
 
 /**
  * Return eligibility, the window, condition
  * requirements, who pays return postage, and how
  * refunds are issued.
  */
-export const RETURNS_TERMS: string[] | null = null;
+export const RETURNS_TERMS: string[] = [
+  "Returns are accepted within 7 days of delivery.",
+  "Items must be unused, unwashed, and in original packaging.",
+  "Customized or personalized products cannot be returned unless defective.",
+  "Customers are responsible for return shipping costs unless the item was delivered damaged or incorrect.",
+  "Refunds are processed after returned items pass inspection.",
+  "Approved refunds will be credited using the original payment method."
+];
 
 /**
  * Who Ultimate Kits is: registration details,
  * trading address, how long it has traded, and
  * anything else the business wants stated.
  */
-export const COMPANY_PROFILE: string[] | null =
-  null;
+export const COMPANY_PROFILE: string[] = [
+  "Ultimate Kits is Nigeria's trusted destination for football jerseys and fan merchandise.",
+  "We stock club, national team, retro, and special-edition jerseys from around the world.",
+  "Our goal is to make premium football apparel accessible to every fan.",
+  "We provide nationwide delivery across Nigeria and responsive customer support.",
+  "We are passionate about football culture and committed to authentic customer experiences."
+];
 
 export const hasSupportContact =
   SUPPORT_EMAIL !== null || SUPPORT_PHONE !== null;
