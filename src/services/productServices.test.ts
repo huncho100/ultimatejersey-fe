@@ -32,11 +32,16 @@ const API_PRODUCT: ApiProduct = {
   description: null,
 
   price: "89.99",
+  development_placeholder: false,
   old_price: "109.99",
 
   rating: 4.5,
 
-  image: "/images/manchester-united-home.jpg",
+  image: "/images/products/football/manchester-united-home.webp",
+  gallery: [
+    "/images/products/football/manchester-united-home.webp",
+    "/images/products/football/manchester-united-home-close-up.webp",
+  ],
 
   is_featured: true,
   is_new: true,
@@ -50,6 +55,16 @@ const API_PRODUCT: ApiProduct = {
 };
 
 describe("toProduct description mapping", () => {
+  it("preserves development price provenance without reinterpreting NGN", () => {
+    const product = toProduct({
+      ...API_PRODUCT,
+      price: "25000.00",
+      old_price: null,
+      development_placeholder: true,
+    });
+    expect(product.price).toBe(25000);
+    expect(product.developmentPlaceholder).toBe(true);
+  });
   it("maps a published description through unchanged", () => {
     const product = toProduct({
       ...API_PRODUCT,
@@ -103,8 +118,9 @@ describe("toProduct description mapping", () => {
     expect(product.rating).toBe(4.5);
     expect(product.category).toBe("Jerseys");
     expect(product.image).toBe(
-      "/images/manchester-united-home.jpg"
+      "/images/products/football/manchester-united-home.webp"
     );
+    expect(product.gallery).toEqual(API_PRODUCT.gallery);
     expect(product.inStock).toBe(true);
     expect(product.stockQuantity).toBeNull();
   });

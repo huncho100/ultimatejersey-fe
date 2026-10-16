@@ -2,6 +2,7 @@ import { formatNaira } from "../../utils/currency";
 
 interface ProductPriceProps {
   price: number;
+  developmentPlaceholder?: boolean;
 
   // Nullable on the API, not merely absent.
   oldPrice?: number | null;
@@ -9,6 +10,7 @@ interface ProductPriceProps {
 
 export default function ProductPrice({
   price,
+  developmentPlaceholder = false,
   oldPrice,
 }: ProductPriceProps) {
   const hasDiscount =
@@ -40,6 +42,12 @@ export default function ProductPrice({
         )}
 
       </div>
+
+      {developmentPlaceholder && (
+        <p className="mt-2 text-sm font-semibold text-amber-800">
+          Development price - not production approved
+        </p>
+      )}
 
       {/* Discount */}
 

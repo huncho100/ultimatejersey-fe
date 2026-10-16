@@ -9,6 +9,7 @@ import Products from "./pages/Products";
 import Clubs from "./pages/Clubs";
 import NationalTeams from "./pages/NationalTeams";
 import Retro from "./pages/Retro";
+import Basketball from "./pages/Basketball";
 import ProductDetails from "./pages/ProductDetails";
 import Search from "./pages/Search";
 import Cart from "./pages/Cart";
@@ -70,6 +71,7 @@ export default function App() {
             path="/retro-kits"
             element={<Retro />}
           />
+          <Route path="/basketball" element={<Basketball />} />
 
           <Route
             path="/search"

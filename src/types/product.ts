@@ -35,6 +35,7 @@ export interface Product {
   // Pricing. Already parsed into numbers; the API
   // sends these as decimal strings.
   price: number;
+  developmentPlaceholder?: boolean;
   oldPrice?: number | null;
 
   // Reviews
@@ -43,8 +44,8 @@ export interface Product {
   // Images
   image?: string | null;
 
-  // Not supplied by the API. Anything reading these
-  // must cope with them being absent.
+  // The API returns gallery images with the primary
+  // image first.
   gallery?: string[];
   sizes?: string[];
 

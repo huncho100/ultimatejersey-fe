@@ -52,6 +52,10 @@ export function handleImageError(
   const image = event.currentTarget;
 
   if (image.src !== PLACEHOLDER_IMAGE) {
+    console.error(
+      "Product image failed to load:",
+      image.getAttribute("src")
+    );
     image.src = PLACEHOLDER_IMAGE;
   }
 }

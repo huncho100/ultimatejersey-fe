@@ -226,6 +226,7 @@ export default function ProductInfo({
       {/* Price */}
 
       <ProductPrice
+        developmentPlaceholder={product.developmentPlaceholder}
         price={product.price}
         oldPrice={product.oldPrice}
       />

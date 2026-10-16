@@ -181,6 +181,11 @@ export default function ProductCard({
               <p className="text-2xl font-extrabold text-slate-900">
                 {formatNaira(product.price)}
               </p>
+              {product.developmentPlaceholder && (
+                <p className="text-xs font-semibold text-amber-800">
+                  Development price - not production approved
+                </p>
+              )}
 
             </div>
 

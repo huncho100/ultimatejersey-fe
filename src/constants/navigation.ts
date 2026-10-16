@@ -24,6 +24,10 @@ export const navigation: NavigationItem[] = [
     label: 'Retro Kits',
     path: '/retro-kits',
   },
+  {
+    label: 'Basketball',
+    path: '/basketball',
+  },
 ];
 
 /**
@@ -53,6 +57,7 @@ export const footerNavigation: NavigationGroup[] = [
         path: '/national-teams',
       },
       { label: 'Retro Kits', path: '/retro-kits' },
+      { label: 'Basketball', path: '/basketball' },
     ],
   },
   {

@@ -71,6 +71,8 @@ export default function ProductGallery({
             <button
               key={index}
               onClick={() => setSelectedImage(img)}
+              aria-label={`Show image ${index + 1} of ${name}`}
+              aria-pressed={selectedImage === img}
               className={`
                 overflow-hidden
                 rounded-2xl

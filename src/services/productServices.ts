@@ -35,11 +35,13 @@ export interface ApiProduct {
   description: string | null;
 
   price: string;
+  development_placeholder: boolean;
   old_price: string | null;
 
   rating: number;
 
   image: string | null;
+  gallery: string[];
 
   is_featured: boolean;
   is_new: boolean;
@@ -62,10 +64,8 @@ export interface ApiProduct {
  * Convert one API product into the shape the UI
  * expects.
  *
- * gallery and sizes are deliberately absent: the
- * products table has no such columns, and inventing
- * values here would put content on the page that
- * nobody in the business wrote.
+ * gallery is stored as product-image associations
+ * and returned in primary-first order.
  *
  * description does have a column, but it is nullable
  * and null for any product an administrator has not
@@ -89,6 +89,7 @@ export function toProduct(
     description: data.description,
 
     price: parseDecimal(data.price),
+    developmentPlaceholder: data.development_placeholder,
 
     oldPrice:
       data.old_price === null
@@ -98,6 +99,7 @@ export function toProduct(
     rating: parseDecimal(data.rating),
 
     image: data.image,
+    gallery: data.gallery,
 
     isNew: data.is_new,
     isFeatured: data.is_featured,
