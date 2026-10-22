@@ -29,11 +29,30 @@ import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import PaymentCallback from "./pages/PaymentCallback";
+import AdminLayout from "./components/admin/AdminLayout";
+import AdminDashboard from "./pages/admin/Dashboard";
+import AdminProducts from "./pages/admin/Products";
+import AdminProductEditor from "./pages/admin/ProductEditor";
+import AdminOrders from "./pages/admin/Orders";
+import AdminOrderDetails from "./pages/admin/OrderDetails";
+import AdminCustomers from "./pages/admin/Customers";
 
 export default function App() {
   return (
     <Router>
       <Routes>
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<AdminDashboard />} />
+          <Route path="products" element={<AdminProducts />} />
+          <Route path="products/new" element={<AdminProductEditor />} />
+          <Route path="products/:id" element={<AdminProductEditor />} />
+          <Route path="inventory" element={<AdminProducts inventory />} />
+          <Route path="orders" element={<AdminOrders />} />
+          <Route path="orders/:id" element={<AdminOrderDetails />} />
+          <Route path="customers" element={<AdminCustomers />} />
+          <Route path="reports" element={<AdminDashboard reports />} />
+          <Route path="*" element={<NotFound />} />
+        </Route>
 
         {/* ==========================
             STORE LAYOUT
