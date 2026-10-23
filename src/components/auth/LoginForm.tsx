@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 
 import Button from "../ui/Button";
 import PasswordInput from "./PasswordInput";
@@ -7,6 +7,7 @@ import { useAuth } from "../../context/AuthContext";
 
 export default function LoginForm() {
   const navigate = useNavigate();
+  const [params] = useSearchParams();
 
   const { login } = useAuth();
 
@@ -36,7 +37,7 @@ export default function LoginForm() {
         password,
       });
 
-      navigate("/");
+      navigate(params.get("next") === "/admin" ? "/admin" : "/");
     } catch (err) {
       setError(
         err instanceof Error

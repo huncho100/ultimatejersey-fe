@@ -126,6 +126,11 @@ export default function Account() {
             </div>
 
             <nav className="mt-6 space-y-2">
+              {user.role === "admin" && (
+                <Link to="/admin" className="block rounded-lg px-4 py-3 font-semibold text-blue-700 hover:bg-blue-50">
+                  Store management
+                </Link>
+              )}
 
               <Link
                 to="/account"

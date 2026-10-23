@@ -2,8 +2,20 @@ const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ??
   "http://localhost:8000";
 
-interface ApiError {
-  detail?: string;
+function apiErrorMessage(value: unknown): string | null {
+  if (!value || typeof value !== "object" || !("detail" in value)) return null;
+  const detail = value.detail;
+  if (typeof detail === "string") return detail;
+  if (!Array.isArray(detail)) return null;
+  return detail.map((entry: unknown) => {
+    if (!entry || typeof entry !== "object" || !("msg" in entry)) {
+      return "Invalid input.";
+    }
+    const field = "loc" in entry && Array.isArray(entry.loc)
+      ? entry.loc.filter((part) => part !== "body").join(".")
+      : "";
+    return `${field ? `${field}: ` : ""}${String(entry.msg)}`;
+  }).join("; ");
 }
 
 /**
@@ -46,8 +58,7 @@ export async function apiRequest<T>(
     const responseBody = await response.text();
 
     try {
-      const error = JSON.parse(responseBody) as ApiError;
-      message = error.detail || message;
+      message = apiErrorMessage(JSON.parse(responseBody)) || message;
     } catch {
       message = responseBody || message;
     }
