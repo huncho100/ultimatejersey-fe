@@ -27,7 +27,9 @@ const product: ApiProduct = {
   id: 9, name: "Chelsea Home Jersey", sport: "Football", category: "Jerseys",
   team: "Chelsea", league: "Premier League", brand: "Nike",
   description: null, price: "25000.00", old_price: null, rating: 4.6,
+  development_placeholder: false,
   image: "/images/products/football/chelsea-home.webp", in_stock: true,
+  gallery: ["/images/products/football/chelsea-home.webp"],
   stock_quantity: 5, is_featured: true, is_new: false, is_best_seller: false,
   created_at: "2026-10-20T12:00:00Z", updated_at: "2026-10-20T12:00:00Z",
 };
